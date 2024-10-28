@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.input-container {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* #error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+} */
+
+.fogot-password{
+    margin-bottom: 10px;
+}
+
+
+@media (min-width:2000px) {
+    label{
+        font-size: 30px;
+    }
+    .login-container{
+        width: 500px;
+    }
+    input[type='text'],
+    input[type='password']{
+        width: 100%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 20px;
+        margin-bottom: 15px;
+        
+    }
+    .fogot-password{
+        font-size: 20px;
+    }
+    button {
+        width: 100%;
+        padding: 15px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+}
