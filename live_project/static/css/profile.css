@@ -1,138 +1,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
-    background-color: #f4f4f4;
-    margin-top: 10%;
-    display: flex;
-    justify-content: center;
-    margin: 0;
-} */
-body {
-    font-family: 'Montserrat', "Arial", sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-}
-
 * {
     -webkit-tap-highlight-color: transparent;
 }
 
-main {
-    margin-top: 70px;
-    transition: margin-top 0.5s ease;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #ebebeb;
+    margin-top: 10%;
+
+}
+
+.avatar-container{
     display: flex;
+    justify-content: flex-start;
+    width: 40%;
+    margin-left: 30px;
+}
+
+
+.circle-image{
+    display: inline-block;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 200px;
+    height: 200px;
+}
+.circle-image img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.user-info{
+    display: inline-block;
     justify-content: center;
+    width: 33.3%;
+
+}
+.container{
+    display: flex;
+    justify-items: flex-start;
+}
+
+.card p{
+    text-align: center;
+}
+
+.card{
+    padding-top: 5px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     margin-bottom: 10%;
 }
 
-/* main{
-    margin-top: 70px;
-    transition: margin-top 0.5s ease;
-} */
-
-.login-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 30%;
-    box-shadow: 17px 7px 11px 8px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.input-container {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
-}
-
-input[type="text"],
-input[type="password"] {
-    width: 90%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #007BFF;
-    outline: none;
-}
-
-.card-button{
-    display: flex;
-    align-items: center;
-    justify-content:center  ;
-}
-
-
-.card-button button{
-    background:black;
-    color: #ffffff;
-    font-size: 1rem;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.5s ease;
-}
-
-
-.card-button button:hover {
-    transform: scale(1.07);
-    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.4);
-    background: #afafaf;
-}
-
-.card-button button p {
-    margin: 0;
-    transition: color 0.1 ease;
-}
-
-.card-button button:hover p {
-    color: black;
-}
-
-.card-button button::before {
-    content: "";
-    display: block;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: -0.5px;
-    width: 100%;
-    background: #afafaf;
-    transition: opacity 0.5s ease;
-    z-index: -1000;
-    border-radius: 5px;
-}
-  
-.card-button button:hover::before {
-  opacity: 1;
-}
-
-.fogot-password{
-    margin-bottom: 10px;
-}
 
 /***  Computer nav-bar (screen width > 700px)  ***/
 .navbar {
@@ -564,9 +486,3 @@ input[type="password"]:focus {
         display: none;
     }
 }
-
-
-
-
-
- 

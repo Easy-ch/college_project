@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/login.css">
-    <title>Document</title>
+    <!-- <link rel="stylesheet" href="static/css/profile.css"> -->
+    <link rel="stylesheet" href="../static/css/profile.css">
+    <title>Профиль</title>
 </head>
 <body>
     <header>
@@ -42,28 +43,30 @@
 
         </nav>
     </header>
+
     <main>
-        <div class="login-container">   
-            <h2>Вход</h2>
-            <form id="loginForm" method="post"> 
-                <div class="input-container">
-                    <label for="username">Логин или Email</label>
-                    <input type="text" id="username" name="login" placeholder="Введите логин или Email"  required>
-                </div>
-                <div class="input-container">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" name="password" placeholder="Введите пароль" required>
-                </div>
-                <div class="fogot-password">
-                    <a href="url#"> Забыли пароль?</a>
-                </div>
-                <div class="card-button">
-                    <button type="submit"><p>Войти</p></button>
-                </div>
-                <p id="error-message"></p>
-            </form>
+        <div style="margin-top: 80px; margin-bottom: 50px; text-align: center;">
+            <h1>Профиль</h1>
         </div>
+        <div class="container">
+            <div class="avatar-container">
+                <span class="circle-image">
+                    <img src="../static/img/pass.jpg"/>
+                   </span>
+            </div>
+    
+        <div class="user-info">
+                <div class="card" >
+                    <div class="block"><p><strong>Username: </strong></p></div> <br>
+                    <div class="block"><p><strong>Email:</p></div> <br>
+                    <div class="block"><p><strong>Телефон:</p></div> <br>
+                    <!-- <div class="block"><p>Username</p></div>     -->
+                </div>
+        </div>
+        </div>
+
     </main>
+
     <script>
         const navbar = document.querySelector('.navbar');
         const main = document.querySelector('main');
@@ -144,6 +147,6 @@
         </div>
 
     </footer>
-
+    
 </body>
 </html>

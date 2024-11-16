@@ -4,32 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
-    <link rel="stylesheet" href="css/register.css">
+    <!-- <link rel="stylesheet" href="static/css/register.css"> -->
+    <link rel="stylesheet" href="../static/css/register.css">
 </head>
 <body>
-    <div class="registration-container">
-        <h2>Регистрация</h2>
-        <form id="registrationForm">
-            <div class="input-container">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Введите вашу почту" required>
+    <header>
+        <nav class="navbar">        
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" class="bi bi-arrows-angle-expand mobile-adapt-icon" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707z"/>
+            </svg>
+
+            <!-- Computer nav-bar (screen width > 700px) -->
+            <div class="navbar-container">
+                <div class="navbar-item"><a href="#">Главная</a></div>
+                <div class="navbar-item"><a href="#">Услуги</a></div>
+                <div class="navbar-item"><a href="#">Отзывы</a></div>
+                <div class="navbar-item"><a href="#">Контакты</a></div>
+
+                <div class="navbar-item"><a href="#">Войти</a></div>
+
+                <div class="logo"><img src="../static/img/logo_white.svg" alt="logo"></div>
             </div>
-            <div class="input-container">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Введите username" required>
+
+            <!-- Mobile nav-bar (screen width < 700px) -->
+            <ul class="mobile-navbar-container">
+                <li class="navbar-item"><a href="#">Главная</a></li>
+                <li class="navbar-item"><a href="#">Услуги</a></li>
+
+                <li class="nav-divider"></li>
+
+                <li class="navbar-item"><a href="#">Регистрация</a></li>
+                <li class="navbar-item"><a href="#">Войти</a></li>
+
+                <li class="nav-divider"></li>
+
+                <li class="navbar-item"><a href="#">Отзывы</a></li>
+            </ul>
+
+        </nav>
+    </header>
+
+    <main>
+        <div class="registration-container">
+            <h2>Регистрация</h2>
+            <form id="registrationForm" method="post">
+                <div class="input-container">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Введите вашу почту" required>
+                </div>
+                <div class="input-container">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Введите username" required>
+                </div>
+                <div class="input-container">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" placeholder="Придумайте пароль" required>
+                </div>
+                <div class="input-container">
+                    <label for="confirm-password">Подтверждение пароля</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Повторите пароль" required>
+                </div>
+                <div class="card-button">
+                    <button type="submit">Зарегестрироваться</button>
+    
+                </div>
+                <p id="error-message"></p>
+            </form>
+        </div>
+    </main>
+    <script>
+        const navbar = document.querySelector('.navbar');
+        const main = document.querySelector('main');
+
+        window.addEventListener('resize', resetMargin);
+
+        // Функция для применения отступа при наведении на navbar
+        function applyMarginOnHover() {
+            // Удаляем предыдущие обработчики, чтобы избежать накопления
+            navbar.removeEventListener('mouseenter', increaseMargin);
+            navbar.removeEventListener('mouseleave', resetMargin);
+
+            if (window.innerWidth > 700) {
+                navbar.addEventListener('mouseenter', increaseMargin);
+                navbar.addEventListener('mouseleave', resetMargin);
+            } else {
+                main.style.marginTop = '60px';
+            }
+        }
+
+        // Функции для изменения отступа
+        function increaseMargin() {
+            main.style.marginTop = '120px';
+        }
+
+        function resetMargin() {
+            main.style.marginTop = '70px';
+        }
+
+        // Вызываем функцию при загрузке страницы
+        applyMarginOnHover();
+
+        // Добавляем обработчик для обновления при изменении размера экрана
+        window.addEventListener('resize', applyMarginOnHover);
+    </script>
+
+    <footer>
+
+        <section id="Contacts" style="background-color: #1b1b1b;">
+
+            <div class="footer-title" style="color: white;">
+                <span style="margin-inline: 20px; margin-block: 10px; font-weight: 300;">Контактная информация</span>
             </div>
-            <div class="input-container">
-                <label for="password">Пароль</label>
-                <input type="password" id="password" name="password" placeholder="Придумайте пароль" required>
+
+            <div class="centered-grid">
+                <div class="footer-grid">
+                    <div class="footer-item">
+                        <h2>О компании:</h2>
+                        <p><i class="bi bi-file-text"></i>&ensp;ИНН: 0000000000</p>
+                        <p><i class="bi bi-justify-left"></i>&ensp;ОГРН: 0000000000000</p>
+                    </div>
+                
+                    <div class="footer-vertical-divider"></div>
+                    <div class="footer-horizontal-divider"></div>
+
+                    <div class="footer-item">
+                        <h2>Контакты:</h2>
+                        <p><i class="bi bi-envelope"></i>&ensp;Email: example@gmail.com</p>
+                        <p><i class="bi bi-telephone"></i>&ensp;Телефон: +7(000)000-00-00</p>
+                    </div>
+
+                    <div class="footer-vertical-divider"></div>
+                    <div class="footer-horizontal-divider"></div>
+
+                    <div class="footer-item">
+                        <h2>Соцсети:</h2>
+                        <p><i class="icon"> </i>&ensp;Email: example@gmail.com</p>
+                        <p><i class="icon"> </i>&ensp;Телефон: +7(000)000-00-00</p>
+                    </div>
+                </div>
             </div>
-            <div class="input-container">
-                <label for="confirm-password">Подтверждение пароля</label>
-                <input type="password" id="confirm-password" name="confirm-password" placeholder="Повторите пароль" required>
-            </div>
-            <button type="submit">Зарегестрироваться</button>
-            <p id="error-message"></p>
-        </form>
-    </div>
-    <!-- <script src="script.js"></script> -->
+
+        </section>
+
+
+        <div class="footer-copyright">
+            <p>Copyright&ensp;2024&ensp;-&ensp;AVrepair.&ensp;All rights reserved.</p>
+        </div>
+
+    </footer>
+
 </body>
 </html>

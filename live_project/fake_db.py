@@ -1,1 +1,0 @@
-fake_db = {"login":"login",'password':'password'}

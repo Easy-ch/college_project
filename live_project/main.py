@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 # from models import Item
 from pages.routers import router as router_pages
-from pages.auth_router import app as router_validate
+from pages.auth_router import app2 as router_validate
 import uvicorn
+from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
@@ -11,7 +12,7 @@ app.include_router(router_pages)
 app.include_router(router_validate)
 
 
-app.mount('/static',StaticFiles(directory='../live_project/static'),name='static')
+app.mount('/static',StaticFiles(directory=Path(__file__).parent / 'static'),name='static')
 
 origins = [
     "http://localhost",
