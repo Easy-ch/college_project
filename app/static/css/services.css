@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #ebebeb;
+    margin: 0;
+    padding: 0;
+}
+
+.services-container {
+    gap: 20px;
+    padding: 20px;
+    display: flex; 
+    flex-wrap: wrap;
+    justify-content: start;
+
+    
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 300px;
+    transition:  0.3s ease, box-shadow 0.3s ease;
+    max-width: 33.33%;
+    flex: 1 1 auto;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.image-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.card-body {
+    padding: 0 15px 15px 15px;
+}
+
+.card-title p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.description-card p {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.card-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.card-button button {
+    background:black;
+    color: #ffffff;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.card-button button:hover {
+    transform: scale(1.07);
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.4);
+}
+
+.card-button button p {
+    margin: 0;
+    transition: color 0.1 ease;
+}
+
+.card-button button:hover p {
+    color: black;
+}
+
+.card-button button::before {
+    content: "";
+    display: block;
+    opacity: 0;
+    position: absolute;
+    top: -0.5px;
+    top: 0;
+    left: -0.5px;
+    width: 100.5%;
+    height: 100.5%;
+    background: #afafaf;
+    transition: opacity 0.5s ease;
+    z-index: -1000;
+    border-radius: 5px;
+}
+  
+.card-button button:hover::before {
+  opacity: 1;
+}

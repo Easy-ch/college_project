@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.avatar-container{
+    display: flex;
+    justify-content: flex-start;
+    width: 40%;
+    margin-left: 30px;
+}
+
+
+.circle-image{
+    display: inline-block;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 200px;
+    height: 200px;
+}
+.circle-image img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.user-info{
+    display: inline-block;
+    justify-content: center;
+    width: 33.3%;
+
+}
+.container{
+    display: flex;
+    justify-items: flex-start;
+}
+
+.card p{
+    text-align: center;
+}
+
+.card {
+    padding-top: 5px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10%;
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "title": "Ремонт принтеров",
+        "description": "ремонт любых моделей принтеров с гарантией.",
+        "image": "/static/img/remont-orgtehniki.jpg"
+    },
+    {
+        "title": "Заправка картриджей",
+        "description": "Быстрая и доступная заправка картриджей для вашего офиса.",
+        "image": "/static/img/remont-orgtehniki.jpg"
+    },
+    {
+        "title": "Ремонт сканеров",
+        "description": "Ремонт офисных сканеров с выездом мастера.",
+        "image": "/static/img/remont-orgtehniki.jpg"
+    },
+    {
+        "title": "Ремонт сканеров",
+        "description": "Ремонт офисных сканеров с выездом мастера.",
+        "image": "/static/img/remont-orgtehniki.jpg"
+    }
+]

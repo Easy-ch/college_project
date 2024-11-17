@@ -1,0 +1,124 @@
+
+
+.company-description-card {
+    justify-self: center;
+    border: 3px black;
+    border-radius: 8px;
+    margin-inline: 20px;
+}
+
+.company-description-grid-container {
+    position: relative;
+    left: -70px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+
+    transition: left 0.5s ease;
+}
+
+.company-title {
+    justify-self: center;
+
+    font-size: 32px;
+    font-weight: 550;
+
+    margin-bottom: 0;
+    margin-left: 3vw;
+}
+
+.company-description {
+    font-size: 16px;
+
+    margin-left: 3vw;
+}
+
+
+.text-lines-black {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.text-lines-black::before,
+.text-lines-black::after {
+    content: "";
+    flex: auto;
+    height: 1px;
+    background-color: #000000;
+    margin-inline: 20px;
+}
+
+
+
+.services-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+
+    column-gap: 20px;
+
+    margin-inline: 36px;
+    margin-bottom: 20px;
+}
+
+.services-grid > * {
+    height: 154px;
+    width: calc((100vw - 36px * 2) / 2 - 20px);
+
+    p {
+        width: 100%;
+        transition: width 0.3s ease;
+    }
+}
+
+.services-card {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+
+    /* width: calc(100% - 2px); */
+    width: calc((100vw - 36px * 2) / 2 - 20px);
+
+    border-radius: 8px;
+    border: 1px solid black;
+    overflow: hidden;
+
+    justify-self: center;
+
+    box-shadow: 0px 10px 8px 2px rgba(0, 0, 0, 0);
+
+    transition: box-shadow 0.4s ease,
+                width 0.3s ease,
+                height 0.17s ease;
+
+    .image {
+        z-index: -1;
+        position: inherit;
+        justify-self: center;
+        width: 100%;
+        height: 100%;
+        background-image: url("../img/remont-orgtehniki.jpg");
+        background-size: cover;
+    }
+}
+
+.services-card {
+    position: relative;
+    height: 130px;
+}
+
+.services-card:hover {
+    box-shadow: 10px 10px 8px 8px rgba(0, 0, 0, 0.355);
+    width: calc((100vw - 36px * 2) / 2);
+    height: calc(150px);
+
+    p {
+        width: calc(100% - 13px);
+    }
+}
+
+@media (max-width: 1200px) {
+    .services-grid {
+        grid-template-columns: auto auto;
+    }
+}
