@@ -1,14 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 .registration-container {
+    justify-self: center;
+
+    width: 30%;
+
+    margin-bottom: 50px;
+    margin-top: 140px;
+
     background-color: #fff;
+
     padding: 20px;
     border-radius: 8px;
-    width: 300px;
-    box-shadow: 17px 7px 11px 8px rgba(0, 0, 0, 0.1);
+   
+    box-shadow: 17px 7px 11px 8px rgba(0, 0, 0, 0.2);
+
+    max-width: 700px;
 }
 
-h2 {
+.registration-container h2 {
+    font-weight: 500;
     text-align: center;
     margin-bottom: 20px;
     color: #333;
@@ -27,7 +38,8 @@ label {
 input[type="email"],
 input[type="text"],
 input[type="password"] {
-    width: 90%;
+    box-sizing: border-box;
+    width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -42,54 +54,74 @@ input[type="password"]:focus {
     outline: none;
 }
 
-.card-button{
+.card-button {
     display: flex;
+
+    width: 70%;
+    margin-top: 30px;
+
+    justify-self: center;
+
     justify-content: center;
-    align-items: center;
+    
+    button {
+        display: flex;
+
+        justify-content: center;
+        font-family: 'Montserrat', "Arial", sans-serif;
+        font-size: 16px;
+
+        width: 90%;
+        padding: 10px 8px;
+
+        border: 0;
+        border-radius: 10px;
+
+        background-color: black;
+        color: white;
+        
+        transition: border-radius 0.4s ease,
+                    width 0.4s ease;
+    }
+
+    button:hover {
+        border-radius: 0px;
+        width: 100%;
+    }
 }
 
-.card-button button{
-    background:black;
-    color: #ffffff;
-    font-size: 1rem;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.5s ease;
+@media (max-width: 1200px) {
+    .registration-container {
+        width: 37vw;
+    } 
 }
 
-
-.card-button button:hover {
-    transform: scale(1.07);
-    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.4);
-    background: #afafaf;
+@media (max-width: 1000px) {
+    .registration-container {
+        width: 47vw;
+    } 
 }
 
-.card-button button p {
-    margin: 0;
-    transition: color 0.1 ease;
+@media (max-width: 800px) {
+    .registration-container {
+        width: 53vw;
+    } 
 }
 
-.card-button button:hover p {
-    color: black;
+@media (max-width: 700px) {
+    .registration-container {
+        width: 60vw;
+    } 
 }
 
-.card-button button::before {
-    content: "";
-    display: block;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: -0.5px;
-    width: 100%;
-    height: auto;
-    background: #afafaf;
-    transition: opacity 0.5s ease;
-    z-index: -1000;
-    border-radius: 5px;
+@media (max-width: 550px) {
+    .registration-container {
+        width: 70vw;
+    } 
 }
-  
-.card-button button:hover::before {
-  opacity: 1;
+
+@media (max-width: 460px) {
+    .registration-container {
+        width: 80vw;
+    } 
 }

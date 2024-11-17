@@ -76,7 +76,7 @@ main {
     opacity: 0;
 
     transition: opacity 0.2s ease,
-        visibility 0.2s ease;
+                visibility 0.2s ease;
 }
 
 .navbar-item {

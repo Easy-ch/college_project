@@ -1,0 +1,31 @@
+{
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+        },
+        "zsh": {
+            "path": "zsh"
+        },
+        "fish": {
+            "path": "fish"
+        },
+        "tmux": {
+            "path": "tmux",
+            "icon": "terminal-tmux"
+        },
+        "pwsh": {
+            "path": "pwsh",
+            "icon": "terminal-powershell"
+        }
+    },
+    "files.exclude": {
+        // "**/.vscode": true,
+        // "**/*/__pycache__": true,
+        // "**/tests": true,
+        // "**/*/requirements.txt": true,
+        // "**/*/README.md": true,
+        // "**/.venv": true,
+    },
+    "liveServer.settings.port": 5501
+}
