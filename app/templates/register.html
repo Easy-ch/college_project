@@ -59,25 +59,72 @@
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Введите username" required>
                 </div>
-
+        
                 <div class="input-container">
                     <label for="password">Пароль</label>
                     <input type="password" id="password" name="password" placeholder="Придумайте пароль" required>
                 </div>
-
+        
                 <div class="input-container">
                     <label for="confirm-password">Подтверждение пароля</label>
                     <input type="password" id="confirm-password" name="confirm-password" placeholder="Повторите пароль" required>
                 </div>
+        
+                <p id="error-message"></p>
 
                 <div class="card-button">
-                    <button type="submit">Зарегестрироваться</button>
+                    <button type="submit">Зарегистрироваться</button>
                 </div>
-
-                <p id="error-message"></p>
             </form>
         </div>
     </main>
+
+    <script>
+        document.getElementById("registrationForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const passwordConfirm = document.getElementById("confirm-password").value;
+
+        const errorMessage = document.getElementById("error-message");
+        errorMessage.textContent = "";
+
+        try {
+            const response = await fetch("/register/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email,
+                    username,
+                    password,
+                    password_confirm: passwordConfirm,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (errorData.detail) {
+                    const errorText = errorData.detail[0]?.msg || "Ошибка регистрации";
+                    errorMessage.textContent = errorText;
+                } else {
+                    errorMessage.textContent = "Не удалось зарегистрироваться. Проверьте данные.";
+                }
+            } else {
+                // Если регистрация успешна
+                const successData = await response.json();
+                alert(successData.message || "Регистрация успешна");
+                document.getElementById("registrationForm").reset();
+            }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            errorMessage.textContent = "Произошла ошибка. Попробуйте позже.";
+        }
+    });
+    </script>
 
     <footer>
 

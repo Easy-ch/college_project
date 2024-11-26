@@ -19,13 +19,14 @@
             "icon": "terminal-powershell"
         }
     },
+
     "files.exclude": {
         // "**/.vscode": true,
-        // "**/*/__pycache__": true,
-        // "**/tests": true,
-        // "**/*/requirements.txt": true,
-        // "**/*/README.md": true,
-        // "**/.venv": true,
+        "**/*/__pycache__": true,
+        "**/tests": true,
+        "**/*/requirements.txt": true,
+        "**/*/README.md": true,
+        "**/.venv": true,
     },
-    "liveServer.settings.port": 5501
+    // "liveServer.settings.port": 5501
 }
