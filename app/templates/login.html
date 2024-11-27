@@ -51,7 +51,7 @@
             <form id="loginForm" method="post"> 
                 <div class="input-container">
                     <label for="username">Логин или Email</label>
-                    <input type="text" id="username" name="login" placeholder="Введите логин или Email"  required>
+                    <input type="text" id="username" name="username" placeholder="Введите логин или Email" required>
                 </div>
                 <div class="input-container">
                     <label for="password">Пароль</label>
@@ -68,6 +68,33 @@
             </form>
         </div>
     </main>
+
+    <script>
+        document.getElementById('loginForm').onsubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const response = await fetch('/login', {
+            method: 'POST',
+            body: formData
+        });
+
+        const formData2 = new FormData(e.target);
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        if (response.ok) {
+            const data = await response.json();
+            document.cookie = `refresh_token=${data.refresh_token}; HttpOnly; Secure`;
+            localStorage.setItem('access_token', data.access_token);
+            alert('Вы успешно вошли!');
+        } else {
+            const error = await response.json();
+            alert(error.detail);
+        }
+    };
+    </script>
 
     <footer>
 

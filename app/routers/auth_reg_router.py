@@ -3,32 +3,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from db import get_db
 from models.models import User
-from utils import hash_password
-from schemas.schemas import RegisterUser
-from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from utils import hash_password, verify_password
+from jwt_utils import verify_token, create_refresh_token, create_access_token
+from fastapi.security import OAuth2PasswordRequestForm
+from schemas.schemas import RegisterUser, TokenResponse
+from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy import select
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from pydantic import EmailStr
 from config import *
 import logging
-
-# email_config = ConnectionConfig (**EmailConfig().model_dump())
-# email_config = ConnectionConfig(
-#     **EmailConfig(MAIL_STARTTLS=True).model_dump()
-# )
-email_config = ConnectionConfig(
-    MAIL_USERNAME="08042007artem@mail.ru",
-    MAIL_PASSWORD="CFk2uEyeCb5d3DuUpVke",
-    MAIL_FROM="08042007artem@mail.ru",
-    MAIL_PORT=465,
-    MAIL_SERVER="smtp.mail.ru",
-    MAIL_STARTTLS=False,
-    MAIL_SSL_TLS=True,
-    USE_CREDENTIALS=True
-)
-
-
-serializer = URLSafeTimedSerializer(SECRET_KEY)
+from fastapi.security import OAuth2PasswordBearer
 
 auth_reg_router = APIRouter()
 
@@ -60,7 +45,6 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Ошибка при сохранении пользователя."
         )
-    
 
     token = serializer.dumps(user.email, salt="email-confirmation")
 
@@ -111,21 +95,56 @@ async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
             status_code=400,
             detail="Недействительная ссылка подтверждения."
         )
+    
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Недействительный токен")
+    return payload
+    
+@auth_reg_router.post("/login", response_model=TokenResponse)
+async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+    query = select(User).where((User.username == form_data.username) | (User.email == form_data.username))
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
+    if not user or not verify_password(form_data.password, user.password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверные учетные данные")
+
+    if not user.isAuthorized:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email не подтвержден")
+
+    access_token = create_access_token({"sub": user.username})
+    refresh_token = create_refresh_token({"sub": user.username})
+
+    print("Plain password:", form_data.password)
+    print("Hashed password:", user.password)
+    print("Password match:", verify_password(form_data.password, user.password))
 
 
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 
+@auth_reg_router.post("/refresh", response_model=TokenResponse)
+async def refresh_token(refresh_token: str, db: AsyncSession = Depends(get_db)):
+    payload = verify_token(refresh_token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Недействительный refresh token")
+
+    query = select(User).where(User.username == payload["sub"])
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Пользователь не найден")
+
+    access_token = create_access_token({"sub": user.username})
+    refresh_token = create_refresh_token({"sub": user.username})
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 
-
-
-
-
-
-# @app2.post('/login')
-# async def validation(form:Annotated[Form()],user:User ):
-#     if form.login != await get_user(user['email']):
-#         raise HTTPException(404,"Not_found_user")
-#     if form.password != await get_user(user['password']):
-#         raise HTTPException(404,'Invalid_password')
-#     return {"status":"success"}
+@auth_reg_router.get("/protected")
+async def protected_route(user: dict = Depends(get_current_user)):
+    return {"message": f"Добро пожаловать, {user['sub']}!"}
