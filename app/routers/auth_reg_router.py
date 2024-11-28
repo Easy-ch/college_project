@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from db import get_db
@@ -9,8 +10,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from schemas.schemas import RegisterUser, TokenResponse
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy import select
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
-from pydantic import EmailStr
+from fastapi_mail import FastMail, MessageSchema
 from config import *
 import logging
 from fastapi.security import OAuth2PasswordBearer
@@ -38,7 +38,6 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
     try:
         db.add(new_user)
         await db.commit()
-        # return {"message": "Регистрация успешна"}
     except IntegrityError:
         await db.rollback()
         raise HTTPException(
@@ -104,6 +103,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Недействительный токен")
     return payload
     
+
 @auth_reg_router.post("/login", response_model=TokenResponse)
 async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     query = select(User).where((User.username == form_data.username) | (User.email == form_data.username))
@@ -119,16 +119,18 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
     access_token = create_access_token({"sub": user.username})
     refresh_token = create_refresh_token({"sub": user.username})
 
-    print("Plain password:", form_data.password)
-    print("Hashed password:", user.password)
     print("Password match:", verify_password(form_data.password, user.password))
 
-
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return { "access_token": access_token,
+             "refresh_token": refresh_token }
 
 
 @auth_reg_router.post("/refresh", response_model=TokenResponse)
-async def refresh_token(refresh_token: str, db: AsyncSession = Depends(get_db)):
+async def refresh_token(request: Request, db: AsyncSession = Depends(get_db)):
+    refresh_token = request.cookies.get("refresh_token")
+    if not refresh_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Отсутствует refresh token")
+
     payload = verify_token(refresh_token)
     if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Недействительный refresh token")
@@ -141,10 +143,41 @@ async def refresh_token(refresh_token: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Пользователь не найден")
 
     access_token = create_access_token({"sub": user.username})
-    refresh_token = create_refresh_token({"sub": user.username})
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return {"access_token": access_token}
 
 
-@auth_reg_router.get("/protected")
-async def protected_route(user: dict = Depends(get_current_user)):
-    return {"message": f"Добро пожаловать, {user['sub']}!"}
+@auth_reg_router.post("/verify-token")
+async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
+    """
+    Эндпоинт для проверки валидности токена.
+    Возвращает данные из токена, если он действителен.
+    """
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Недействительный или истёкший токен"
+        )
+    return {"message": "Токен действителен", "data": payload}
+
+
+@auth_reg_router.get("/get_user_data")
+async def protected_route(user: dict = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    query = select(User).where(User.email == user['sub'])
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
+    if user:
+        return {
+                    "email": user.email,
+                    "username": user.username,
+                    # "phone_number": user.phone_number
+               }
+
+    return {"message": f"Данные токена доступа неверны."}
+
+
+# @auth_reg_router.get("/profile")
+# async def profile(user: dict = Depends(get_current_user)):
+    
+#     return {"message": f"Профиль пользователя: {user['sub']}"}

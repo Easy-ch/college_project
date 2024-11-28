@@ -1,10 +1,11 @@
 from fastapi_mail import ConnectionConfig
 from itsdangerous import URLSafeTimedSerializer
 
-START_WITH_TEST = True
+START_WITH_TEST = False
 DATABASE_URL    = "postgresql+asyncpg://server_root:qwertyuiop1@188.242.78.13:5432/project"
-SECRET_KEY = ""
-SERVER_ADDRES = "http://188.242.78.13"
+SECRET_KEY      = ""
+# SERVER_ADDRES = "http://188.242.78.13"
+SERVER_ADDRES = "http://0.0.0.0:8000/auth"
 IS_DEBUG = True
 
 email_config = ConnectionConfig(

@@ -48,3 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
     checkScrollPosition();
     window.addEventListener('scroll', checkScrollPosition);
 });
+
+
+access_token = localStorage.getItem('access_token');

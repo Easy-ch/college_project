@@ -8,7 +8,7 @@
 }
 
 .registration-container {
-    justify-self: center;
+    margin-inline: auto;
 
     width: 30%;
 
@@ -63,12 +63,9 @@ input[type="password"]:focus {
 
 .card-button {
     display: flex;
-
     width: 70%;
     margin-top: 20px;
-
-    justify-self: center;
-
+    margin-inline: auto;
     justify-content: center;
     
     button {

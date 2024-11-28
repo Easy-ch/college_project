@@ -27,3 +27,8 @@ async def get_register_page(request:Request):
 @router.get('/services')
 async def get_services_page(request:Request):
     return templates.TemplateResponse('services.html', {"request": request})
+
+
+@router.get('/profile')
+async def get_services_page(request:Request):
+    return templates.TemplateResponse('profile.html', {"request": request})

@@ -55,7 +55,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 app.include_router(router_pages)
-app.include_router(router_validate)
+app.include_router(router_validate, prefix="/auth")
 app.mount('/static', StaticFiles(directory=Path(__file__).parent / 'static'))
 
 origins = [
@@ -95,4 +95,4 @@ if not START_WITH_TEST:
             else:
                 SECRET_KEY = key_file.read_text()
 
-        uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

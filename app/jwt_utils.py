@@ -1,6 +1,11 @@
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
-from typing import Union
+from fastapi import Request
+from starlette.middleware.base import BaseHTTPMiddleware
+# from jwt_utils import verify_token
+from fastapi.responses import JSONResponse
+from jose import JWTError
+
 
 # Конфигурация JWT
 SECRET_KEY = "your-secret-key"
