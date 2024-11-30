@@ -18,12 +18,12 @@
 
             <!-- Computer nav-bar (screen width > 700px) -->
             <div class="navbar-container">
-                <div class="navbar-item"><a href="#">Главная</a></div>
-                <div class="navbar-item"><a href="#">Услуги</a></div>
+                <div class="navbar-item"><a href="/">Главная</a></div>
+                <div class="navbar-item"><a href="/#services">Услуги</a></div>
                 <div class="navbar-item"><a href="#">Отзывы</a></div>
-                <div class="navbar-item"><a href="#">Контакты</a></div>
+                <div class="navbar-item"><a href="#Contacts">Контакты</a></div>
 
-                <div class="navbar-item"><a href="#">Войти</a></div>
+                <div class="navbar-item"><a id="logout" href="#">Выйти</a></div>
 
                 <div class="logo"><img src="../static/img/logo_white.svg" alt="logo"></div>
             </div>
@@ -36,7 +36,7 @@
                 <li class="nav-divider"></li>
 
                 <li class="navbar-item"><a href="#">Регистрация</a></li>
-                <li class="navbar-item"><a href="#">Войти</a></li>
+                <li class="navbar-item"><a href="#">Выйти</a></li>
 
                 <li class="nav-divider"></li>
 
@@ -59,11 +59,11 @@
             </div>
     
             <div class="user-info">
-                    <div class="card" >
-                        <div class="block"><p><strong>Username:</strong></p></div><br>
-                        <div class="block"><p><strong>Email:</p></div><br>
-                        <div class="block"><p><strong>Телефон:</p></div><br>
-                    </div>
+                <div class="card" >
+                    <div class="block"><p id="username">Username:</p></div>
+                    <div class="block"><p id="email">Email:</p></div>
+                    <div class="block"><p>Телефон:</p></div>
+                </div>
             </div>
         </div>
 
@@ -114,7 +114,8 @@
 
     </footer>
 
-    <script src="../static/js/general_scripts.js" defer></script>
-    <script src="../static/js/update_token.js" defer></script>
+    <script  src="../static/js/general_scripts.js" defer></script>
+    <script src="../static/js/logout.js" defer></script>
+    <script src="../static/js/profile_update_token.js" defer></script>
 </body>
 </html>

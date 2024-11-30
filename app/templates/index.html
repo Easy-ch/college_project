@@ -19,12 +19,10 @@
 
             <!-- Computer nav-bar (screen width > 700px) -->
             <div class="navbar-container">
-                <div class="navbar-item"><a href="#">Главная</a></div>
-                <div class="navbar-item"><a href="#">Услуги</a></div>
-                <div class="navbar-item"><a href="#">Отзывы</a></div>
-                <div class="navbar-item"><a href="#">Контакты</a></div>
-
-                <div class="navbar-item"><a href="/login">Войти</a></div>
+                <div class="navbar-item"><a href="/">Главная</a></div>
+                <div class="navbar-item"><a href="/services">Услуги</a></div>
+                <div class="navbar-item"><a href="/register">Регистрация</a></div>
+                <div class="navbar-item"><a id="unauth-navbar" href="/login">Войти</a></div>
 
                 <div class="logo"><img src="../static/img/logo_white.svg" alt="logo"></div>
             </div>
@@ -134,6 +132,28 @@
 
     </footer>
     
-    <script src="../static/js/general_scripts.js" defer></script>
+    <script  src="../static/js/general_scripts.js" defer></script>
+    <script>
+        // document.getElementById('logout').addEventListener('click', () => {
+        //     logout();
+
+        // });
+
+        // function logout() {
+        //     localStorage.removeItem('access_token');
+        //     document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        //     window.location.href = '/login';
+        // }
+
+        let unauthNavbar = document.getElementById('unauth-navbar');
+        let authNavbar = document.getElementById('auth-navbar');
+        authNavbar.style.display = "none";
+        unauthNavbar.style.display = "flex";
+        authNavbar.style.display = "flex";
+        unauthNavbar.style.display = "none";
+
+
+    </script>
+    <script src="../static/js/logout.js" defer></script>
 </body>
 </html>
