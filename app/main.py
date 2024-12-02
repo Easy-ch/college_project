@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import START_WITH_TEST
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from sqlalchemy.exc import IntegrityError
 from contextlib import asynccontextmanager
 from db import init_db
@@ -88,6 +88,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": errors},
     )
 
+@app.exception_handler(404)
+async def get_404_error(request:Request, exc:404):
+    return  FileResponse("templates/error404.html",
+                         status_code=404)
+
 
 if not START_WITH_TEST:
     if __name__ == '__main__':
@@ -101,7 +106,3 @@ if not START_WITH_TEST:
                 SECRET_KEY = key_file.read_text()
 
         uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
-
-# {
-#     "detail": "Пароли не совпадают."
-# }
