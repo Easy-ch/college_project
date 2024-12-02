@@ -19,12 +19,12 @@
             <!-- Computer nav-bar (screen width > 700px) -->
             <div class="navbar-container">
                 <div class="navbar-item"><a href="/">Главная</a></div>
-                <div class="navbar-item"><a href="/#services">Услуги</a></div>
-                <div class="navbar-item"><a href="#">Отзывы</a></div>
-                <div class="navbar-item"><a href="#Contacts">Контакты</a></div>
-
-                <div class="navbar-item"><a id="logout" href="#">Выйти</a></div>
-
+                <div class="navbar-item"><a  href="/services">Услуги</a></div>
+                <div class="navbar-item unauth-navbar"><a href="/register">Регистрация</a></div>
+                <div class="navbar-item unauth-navbar"><a  href="/login">Войти</a></div>
+                <div class="navbar-item auth-navbar"><a  href="/profile">Корзина</a></div>
+                <div class="navbar-item auth-navbar"><a  href="/profile">Профиль</a></div>
+                <div class="navbar-item auth-navbar" ><a  id="logout" href="/logout">Выйти</a></div>
                 <div class="logo"><img src="../static/img/logo_white.svg" alt="logo"></div>
             </div>
 
@@ -47,25 +47,37 @@
     </header>
 
     <main>
-        <div style="margin-top: 80px; margin-bottom: 50px; text-align: center;">
-            <h1>Профиль</h1>
-        </div>
-        
-        <div class="container">
-            <div class="avatar-container">
-                <span class="circle-image">
+        <div class="main-section">
+            <div class="grid-1-2">
+                <h1 style="font-weight: 400; margin-top: 6px; text-align: center; grid-column: span 2;">Личный кабинет</h1>
+                <div class="profile-data">
                     <img src="../static/img/pass.jpg"/>
-                   </span>
-            </div>
-    
-            <div class="user-info">
-                <div class="card" >
-                    <div class="block"><p id="username">Username:</p></div>
-                    <div class="block"><p id="email">Email:</p></div>
-                    <div class="block"><p>Телефон:</p></div>
+
+                    <div class="private-data">
+                        <h3>Личные данные</h3>
+                        <div class="private-data-item">
+                            <p style="font-weight: 500; margin-bottom: 8px;">Имя пользователя:</p>
+                            <p id="username" style="text-indent: 10px; color: rgb(29, 96, 255); margin-top: 8px;">Не указано</p>
+                        </div>
+
+                        <div class="private-data-item">
+                            <p style="font-weight: 500; margin-bottom: 8px;">Электронная почта:</p>
+                            <p id="email" style="text-indent: 10px; color: rgb(29, 96, 255); margin-top: 8px;">Не указано</p>
+                        </div>
+
+                        <div class="private-data-item">
+                            <p style="font-weight: 500; margin-bottom: 8px;">Телефон:</p>
+                            <p id="phone-number" style="text-indent: 10px; color: rgb(29, 96, 255); margin-top: 8px;">Не указано</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="other-data">
+                    <h1 style="text-align: center; font-weight: 500; margin-top: 8px;">Другая информация</h1>
                 </div>
             </div>
         </div>
+        
 
     </main>
 
@@ -117,5 +129,6 @@
     <script  src="../static/js/general_scripts.js" defer></script>
     <script src="../static/js/logout.js" defer></script>
     <script src="../static/js/profile_update_token.js" defer></script>
+    <script src="../static/js/isauth.js"></script>
 </body>
 </html>

@@ -1,7 +1,16 @@
-document.getElementById('logout').addEventListener('click', logout);
+document.getElementById('logout').addEventListener('click', async (event) => {
+    event.preventDefault(); 
 
-function logout() {
-    localStorage.removeItem('access_token');
-    document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.href = '/login';
-}
+    const response = await fetch('/logout', {
+        method: 'GET',
+        credentials: 'include' 
+    });
+
+    if (response.ok) {
+        
+        localStorage.removeItem('access_token');
+        window.location.href = '/login';
+    } else {
+        console.error('Ошибка при выходе из системы');
+    }
+});

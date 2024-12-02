@@ -4,13 +4,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from db import get_db
 from models.models import User
-from utils import hash_password, verify_password
+from utils import hash_password, verify_password, send_registration_email
 from jwt_utils import verify_token, create_refresh_token, create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
 from schemas.schemas import RegisterUser
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy import select
 from fastapi_mail import FastMail, MessageSchema
+from smtplib import SMTPRecipientsRefused
 from config import *
 import logging
 from fastapi.security import OAuth2PasswordBearer
@@ -29,6 +30,13 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Пользователь с таким email или username уже существует.",
         )
+
+    token = serializer.dumps(user.email, salt="email-confirmation")
+
+    confirmation_url = f"{SERVER_ADDRES}/confirm-email/{token}"
+    logging.info(f"{confirmation_url}\n")
+
+    await send_registration_email(user.email, confirmation_url)
     
     new_user = User(
         email=user.email,
@@ -45,22 +53,10 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
             detail="Ошибка при сохранении пользователя."
         )
 
-    token = serializer.dumps(user.email, salt="email-confirmation")
-
-    confirmation_url = f"{SERVER_ADDRES}/confirm-email/{token}"
-    logging.info(f"{confirmation_url}\n")
-
-    message = MessageSchema(
-        subject="Подтверждение регистрации",
-        recipients=[user.email],
-        body=f"Перейдите по ссылке для подтверждения: {confirmation_url}",
-        subtype="plain",
-    )
-
-    fm = FastMail(email_config)
-    await fm.send_message(message)
-
-    return {"message": "Письмо с подтверждением отправлено"}
+    response = JSONResponse({
+        "message": f"Письмо с подтверждением отправлено"
+    })
+    return response
 
 
 @auth_reg_router.get("/confirm-email/{token}")
@@ -78,12 +74,13 @@ async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
                 detail="Пользователь не найден."
             )
 
-        # Обновляем поле isAuthorized
         user.isAuthorized = True
         await db.commit()
 
-        return {"message": f"Email {email} успешно подтвержден!"}
-
+        response = JSONResponse({
+            "message": f"Email {email} успешно подтвержден!"
+        })
+        return response
     except SignatureExpired:
         raise HTTPException(
             status_code=400,
@@ -124,6 +121,7 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
     response = JSONResponse({
         "access_token": access_token
     })
+
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
@@ -168,7 +166,12 @@ async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Недействительный или истёкший токен"
         )
-    return {"message": "Токен действителен", "data": payload}
+    # return {"message": "Токен действителен", "data": payload}
+    response = JSONResponse({
+        "message": "Токен действителен",
+        "data": payload
+    })
+    return response
 
 
 @auth_reg_router.get("/get_user_data")
@@ -178,10 +181,19 @@ async def protected_route(user: dict = Depends(get_current_user), db: AsyncSessi
     user = result.scalar_one_or_none()
 
     if user:
-        return {
-                    "email": user.email,
-                    "username": user.username   
-                    # "phone_number": user.phone_number
-               }
+        # return {
+        #             "email": user.email,
+        #             "username": user.username   
+        #             # "phone_number": user.phone_number
+        #        }
+        response = JSONResponse({
+            "email": user.email,
+            "username": user.username  
+        })
+        return response
 
-    return {"message": f"Access token data is incorrect"}
+    # return {"message": f"Access token data is incorrect"}
+    response = JSONResponse({
+        "message": "Access token data is incorrect"
+    })
+    return response

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field, model_validator
-from fastapi.exceptions import RequestValidationError
+from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi import status
 
 class RegisterUser(BaseModel):
     email: EmailStr
@@ -26,7 +27,14 @@ class RegisterUser(BaseModel):
     @model_validator(mode="after")
     def validate_passwords_match(self):
         if self.password != self.password_confirm:
-            raise RequestValidationError("Пароли не совпадают.")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail={
+                    "field": ["password",
+                              "password_confirm"],
+                    "message": "Пароли не совпадают"
+                }
+            )
         return self
     
     

@@ -1,6 +1,6 @@
 from fastapi import Request, APIRouter
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,Response
 from utils import load_services
 
 
@@ -32,3 +32,18 @@ async def get_services_page(request:Request):
 @router.get('/profile')
 async def get_services_page(request:Request):
     return templates.TemplateResponse('profile.html', {"request": request})
+
+
+@router.get('/logout')
+async def logout_route(response: Response, request:Request):
+    response.set_cookie(
+        key="refresh_token",
+        value="",  
+        httponly=True,
+        secure=False,   # Использовать True для HTTPS
+        samesite="Strict", 
+        max_age=0  
+    )
+
+
+    return {"message": f"loggout"}

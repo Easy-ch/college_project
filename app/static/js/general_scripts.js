@@ -40,9 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 navbar.classList.remove('force-hover');
                 resetMargin();
             }
-        } else {
-
         }
+        //  else {
+
+        // }
     }
 
     checkScrollPosition();

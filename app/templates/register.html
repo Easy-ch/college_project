@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
-
     <link type="image/x-icon" href="../static/img/favicon.ico" rel="shortcut icon">
     <link rel="stylesheet" href="../static/css/register.css">
     <link rel="stylesheet" href="../static/css/general_styles.css">
@@ -19,12 +18,12 @@
             <!-- Computer nav-bar (screen width > 700px) -->
             <div class="navbar-container">
                 <div class="navbar-item"><a href="/">Главная</a></div>
-                <div class="navbar-item"><a href="/#services">Услуги</a></div>
-                <div class="navbar-item"><a href="#">Отзывы</a></div>
-                <div class="navbar-item"><a href="#Contacts">Контакты</a></div>
-
-                <div class="navbar-item"><a href="/login">Войти</a></div>
-
+                <div class="navbar-item"><a  href="/services">Услуги</a></div>
+                <div class="navbar-item unauth-navbar"><a href="/register">Регистрация</a></div>
+                <div class="navbar-item unauth-navbar"><a  href="/login">Войти</a></div>
+                <div class="navbar-item auth-navbar"><a  href="/profile">Корзина</a></div>
+                <div class="navbar-item auth-navbar"><a  href="/profile">Профиль</a></div>
+                <div class="navbar-item auth-navbar" ><a  id="logout" href="/logout">Выйти</a></div>
                 <div class="logo"><img src="../static/img/logo_white.svg" alt="logo"></div>
             </div>
 
@@ -114,7 +113,6 @@
                     errorMessage.textContent = "Не удалось зарегистрироваться. Проверьте данные.";
                 }
             } else {
-                // Если регистрация успешна
                 const successData = await response.json();
                 alert(successData.message || "Регистрация успешна");
                 document.getElementById("registrationForm").reset();
@@ -126,8 +124,8 @@
     });
     </script>
 
-    <footer>
 
+    <footer>
         <section id="Contacts" style="background-color: #1b1b1b;">
 
             <div class="footer-title" style="color: white;">
@@ -164,13 +162,13 @@
 
         </section>
 
-
         <div class="footer-copyright">
             <p>Copyright&ensp;2024&ensp;-&ensp;AVrepair.&ensp;All rights reserved.</p>
         </div>
-
     </footer>
 
+
     <script src="../static/js/general_scripts.js" defer></script>
+    <script src="../static/js/isauth.js"></script>
 </body>
 </html>

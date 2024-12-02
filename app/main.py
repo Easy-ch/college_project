@@ -18,6 +18,7 @@ from contextlib import asynccontextmanager
 from db import init_db
 from pathlib import Path
 from secrets import token_urlsafe
+from utils import validation_translate
 
 green = "\033[32m"
 reset = "\033[0m"
@@ -35,44 +36,6 @@ else:
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-        await init_db()
-        yield
-
-
-app = FastAPI(lifespan=lifespan)
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    errors = [
-        {"field": ".".join(map(str, err["loc"])), "message": err["msg"]}
-        for err in exc.errors()
-    ]
-    return JSONResponse(
-        status_code=422,
-        content={"detail": errors},
-    )
-
-app.include_router(router_pages)
-app.include_router(router_validate, prefix="/auth")
-app.mount('/static', StaticFiles(directory=Path(__file__).parent / 'static'))
-
-origins = [
-    # "http://localhost",
-    # "http://localhost:8080",
-    "*"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["POST", "GET", "PUT", "DELETE"],
-    allow_headers=["Content-Type"],
-)
-
-
 if START_WITH_TEST:
     logging.info("Приложение запущено в тестовом режиме\n")
     
@@ -82,6 +45,48 @@ if START_WITH_TEST:
         sys.exit(exit_code)
     else:
         logging.info(f"{green}Тесты пройдены успешно{reset}\n")
+
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+        await init_db()
+        yield
+
+app = FastAPI(lifespan=lifespan)
+app.include_router(router_pages)
+app.include_router(router_validate, prefix="/auth")
+app.mount('/static', StaticFiles(directory=Path(__file__).parent / 'static'))
+origins = [
+    # "http://localhost",
+    # "http://localhost:8080",
+    "*"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["POST", "GET", "PUT", "DELETE"],
+    allow_headers=["Content-Type"],
+)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Обработчик ошибок валидации Pydantic с переводом на русский язык."""
+    errors = []
+    for err in exc.errors():
+        field_path = ".".join(map(str, err.get("loc", [])))
+
+        if field_path.startswith("body."):
+            field_path = field_path[5:]
+
+        errors.append({"field": field_path, "message": validation_translate(err.get("msg", "Ошибка"), field_path)})
+    
+    return JSONResponse(
+        status_code=422,
+        content={"detail": errors},
+    )
 
 
 if not START_WITH_TEST:
@@ -95,4 +100,8 @@ if not START_WITH_TEST:
             else:
                 SECRET_KEY = key_file.read_text()
 
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+        uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+
+# {
+#     "detail": "Пароли не совпадают."
+# }
