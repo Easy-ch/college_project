@@ -52,7 +52,8 @@ async def send_registration_email(email: str, confirmation_url: str):
 def validation_translate(message: str, field: str):
     """Переводит сообщения валидации на русский язык."""
     
-    email_invalid_characters_match = re.match( # Проверка сообщений с недопустимыми символами в email
+    # Проверка сообщений с недопустимыми символами после @
+    email_invalid_characters_match = re.match(
         r"value is not a valid email address: The part after the @-sign contains invalid characters: (.+).",
         message,
     )
@@ -61,6 +62,18 @@ def validation_translate(message: str, field: str):
         return (
             f"Значение поля '{field}' не является действительным адресом электронной почты: "
             f"часть после знака @ содержит недопустимые символы: {invalid_characters}."
+        )
+    
+    # Проверка сообщений с недопустимыми символами перед @
+    email_invalid_before_at_match = re.match(
+        r"value is not a valid email address: The email address contains invalid characters before the @-sign: (.+).",
+        message,
+    )
+    if email_invalid_before_at_match:
+        invalid_characters = email_invalid_before_at_match.group(1)
+        return (
+            f"Значение поля '{field}' не является действительным адресом электронной почты: "
+            f"адрес электронной почты содержит недопустимые символы перед знаком @: {invalid_characters}."
         )
     
     match message:
@@ -87,6 +100,12 @@ def validation_translate(message: str, field: str):
         
         case "value is not a valid email address: There must be something after the @-sign.":
             return f"Значение поля '{field}' не является действительным адресом электронной почты: после знака @ должно быть что-то."
+        
+        case "value is not a valid email address: There must be something before the @-sign.":
+            return f"Значение поля '{field}' не является действительным адресом электронной почты: перед знаком @ должно быть что-то."
+        
+        case "value is not a valid email address: An email address cannot have a period immediately before the @-sign.":
+            return f"Значение поля '{field}' не является допустимым адресом электронной почты: адрес электронной почты не может иметь точку непосредственно перед знаком @."
         
         case _:
             return message

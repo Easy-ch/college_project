@@ -53,10 +53,9 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
             detail="Ошибка при сохранении пользователя."
         )
 
-    response = JSONResponse({
+    return JSONResponse({
         "message": f"Письмо с подтверждением отправлено"
     })
-    return response
 
 
 @auth_reg_router.get("/confirm-email/{token}")
@@ -77,10 +76,9 @@ async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
         user.isAuthorized = True
         await db.commit()
 
-        response = JSONResponse({
+        return JSONResponse({
             "message": f"Email {email} успешно подтвержден!"
         })
-        return response
     except SignatureExpired:
         raise HTTPException(
             status_code=400,
@@ -166,12 +164,11 @@ async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Недействительный или истёкший токен"
         )
-    # return {"message": "Токен действителен", "data": payload}
-    response = JSONResponse({
+
+    return JSONResponse({
         "message": "Токен действителен",
         "data": payload
     })
-    return response
 
 
 @auth_reg_router.get("/get_user_data")
@@ -181,19 +178,12 @@ async def protected_route(user: dict = Depends(get_current_user), db: AsyncSessi
     user = result.scalar_one_or_none()
 
     if user:
-        # return {
-        #             "email": user.email,
-        #             "username": user.username   
-        #             # "phone_number": user.phone_number
-        #        }
-        response = JSONResponse({
+        return JSONResponse({
             "email": user.email,
-            "username": user.username  
+            "username": user.username
+            # "phone_number": user.phone_number
         })
-        return response
 
-    # return {"message": f"Access token data is incorrect"}
-    response = JSONResponse({
+    return JSONResponse({
         "message": "Access token data is incorrect"
     })
-    return response

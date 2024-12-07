@@ -23,6 +23,7 @@ from utils import validation_translate
 green = "\033[32m"
 reset = "\033[0m"
 
+
 if START_WITH_TEST:
     logging.basicConfig(
         level=logging.DEBUG,
@@ -52,6 +53,7 @@ if START_WITH_TEST:
 async def lifespan(app: FastAPI):
         await init_db()
         yield
+
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router_pages)
@@ -90,8 +92,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 @app.exception_handler(404)
 async def get_404_error(request:Request, exc:404):
-    return  FileResponse("templates/error404.html",
-                         status_code=404)
+    return FileResponse("templates/error404.html",
+                        status_code=404)
 
 
 if not START_WITH_TEST:
