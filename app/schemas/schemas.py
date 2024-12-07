@@ -48,8 +48,3 @@ class LoginUser(BaseModel):
                           min_length=8,
                           max_length=30,
                           description="Пароль")
-    
-    
-# class TokenResponse(BaseModel):
-#     access_token: str
-#     refresh_token: str

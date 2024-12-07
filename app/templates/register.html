@@ -107,7 +107,8 @@
             if (!response.ok) {
                 const errorData = await response.json();
                 if (errorData.detail) {
-                    const errorText = errorData.detail[0]?.msg || "Ошибка регистрации";
+                    errorMessage.style = "height: min-content;";
+                    const errorText = errorData.detail[0]?.message || "Ошибка регистрации";
                     errorMessage.textContent = errorText;
                 } else {
                     errorMessage.textContent = "Не удалось зарегистрироваться. Проверьте данные.";

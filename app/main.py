@@ -76,6 +76,7 @@ app.add_middleware(
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Обработчик ошибок валидации Pydantic с переводом на русский язык."""
+    print("1234567890-kjeafbvlhiebrv;oerbor")
     errors = []
     for err in exc.errors():
         field_path = ".".join(map(str, err.get("loc", [])))
@@ -84,7 +85,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             field_path = field_path[5:]
 
         errors.append({"field": field_path, "message": validation_translate(err.get("msg", "Ошибка"), field_path)})
-    
+
     return JSONResponse(
         status_code=422,
         content={"detail": errors},

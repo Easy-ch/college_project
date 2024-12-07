@@ -11,6 +11,9 @@ document.getElementById('logout').addEventListener('click', async (event) => {
         localStorage.removeItem('access_token');
         window.location.href = '/login';
     } else {
+        // let p_error = document.getElementById("error-message");
+        // const json_err = await response.json();
+        // p_error.textContent = json_err[""]
         console.error('Ошибка при выходе из системы');
     }
 });

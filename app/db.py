@@ -25,19 +25,3 @@ async def init_db():
 async def get_db():
     async with AsyncSessionLocal() as session:
         yield session
-
-
-# from sqlalchemy.ext.asyncio import AsyncEngine
-
-# async def run_migrations_online():
-#     connectable = async_engine
-
-#     async with connectable.connect() as connection:
-#         await connection.run_sync(do_run_migrations)
-#     await connectable.dispose()
-
-# async def do_run_migrations(connection):
-#     context.configure(connection=connection, target_metadata=Base)
-
-#     with context.begin_transaction():
-#         context.run_migrations()
