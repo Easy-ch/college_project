@@ -10,31 +10,26 @@ from fastapi.security import OAuth2PasswordRequestForm
 from schemas.schemas import RegisterUser
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy import select
-from fastapi_mail import FastMail, MessageSchema
-from smtplib import SMTPRecipientsRefused
 from config import *
-import logging
 from fastapi.security import OAuth2PasswordBearer
 
 auth_reg_router = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 @auth_reg_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
     query = select(User).where((User.email == user.email) | (User.username == user.username))
     result = await db.execute(query)
-    existing_user = result.scalar_one_or_none()
+    existing_users = result.scalars().all()
 
-    if existing_user:
+    if existing_users:
         await db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Пользователь с таким email или username уже существует.",
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=[{ "message": "Пользователь с таким email или username уже существует" }])
 
     token = serializer.dumps(user.email, salt="email-confirmation")
 
     confirmation_url = f"{SERVER_ADDRES}/confirm-email/{token}"
-    logging.info(f"{confirmation_url}\n")
 
     await send_registration_email(user.email, confirmation_url)
     
@@ -48,13 +43,11 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
         await db.commit()
     except IntegrityError:
         await db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Ошибка при сохранении пользователя."
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=[{ "message": "Ошибка при сохранении пользователя." }])
 
     return JSONResponse({
-        "message": f"Письмо с подтверждением отправлено"
+        "message": f"Подтвердите регистрацию по ссылке, отправленной по электронной почте"
     })
 
 
@@ -68,10 +61,8 @@ async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
         user = result.scalar_one_or_none()
 
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Пользователь не найден."
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=[{ "message": "Пользователь не найден."}])
 
         user.isAuthorized = True
         await db.commit()
@@ -80,22 +71,18 @@ async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
             "message": f"Email {email} успешно подтвержден!"
         })
     except SignatureExpired:
-        raise HTTPException(
-            status_code=400,
-            detail="Срок действия ссылки истек. Пожалуйста, запросите новую."
-        )
+        raise HTTPException(status_code=400,
+                            detail=[{ "message": "Срок действия ссылки истек. Пожалуйста, запросите новую." }])
     except BadSignature:
-        raise HTTPException(
-            status_code=400,
-            detail="Недействительная ссылка подтверждения."
-        )
-    
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+        raise HTTPException(status_code=400,
+                            detail=[{ "message": "Недействительная ссылка подтверждения." }])
+
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     payload = verify_token(token)
     if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Недействительный токен")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=[{ "message": "Недействительный токен" }])
     return payload
     
 
@@ -106,10 +93,12 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
     user = result.scalar_one_or_none()
 
     if not user or not verify_password(form_data.password, user.password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверные учетные данные")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=[{ "message": "Неверные учетные данные" }])
 
     if not user.isAuthorized:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email не подтвержден")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=[{ "message": "Email не подтвержден" }])
 
     access_token = create_access_token({"sub": user.username})
     refresh_token = create_refresh_token({"sub": user.username})
@@ -133,18 +122,21 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
 async def refresh_token(request: Request, db: AsyncSession = Depends(get_db)):
     refresh_token = request.cookies.get("refresh_token")
     if not refresh_token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Отсутствует refresh token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=[{ "message": "Отсутствует refresh token" }])
 
     payload = verify_token(refresh_token)
     if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Недействительный refresh token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=[{ "message": "Недействительный refresh token" }])
 
     query = select(User).where(User.username == payload["sub"])
     result = await db.execute(query)
     user = result.scalar_one_or_none()
 
     if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Пользователь не найден")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=[{ "message": "Пользователь не найден" }])
 
     access_token = create_access_token({"sub": user.username})
     return {"access_token": access_token}
@@ -152,16 +144,10 @@ async def refresh_token(request: Request, db: AsyncSession = Depends(get_db)):
 
 @auth_reg_router.post("/verify-token")
 async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
-    """
-    Эндпоинт для проверки валидности токена.
-    Возвращает данные из токена, если он действителен.
-    """
     payload = verify_token(token)
     if not payload:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="Недействительный или истёкший токен"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+                            detail=[{ "message":"Недействительный или истёкший токен" }])
 
     return JSONResponse({
         "message": "Токен действителен",

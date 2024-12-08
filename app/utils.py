@@ -76,6 +76,17 @@ def validation_translate(message: str, field: str):
             f"адрес электронной почты содержит недопустимые символы перед знаком @: {invalid_characters}."
         )
     
+    pattern_match = re.match(
+        r"String should match pattern '(.+)'", 
+        message
+    )
+    if pattern_match:
+        pattern = pattern_match.group(1)
+        return (
+            f"Значение поля '{field}' не соответствует шаблону. "
+            f"Допустимы только буквы, цифры, символы '.', '_', '-', а также кириллица."
+        )
+    
     match message:
         case "String should have at least 4 characters":
             return f"Длина поля '{field}' должна быть не меньше 4 символов."

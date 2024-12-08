@@ -2,16 +2,9 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-# from jwt_utils import verify_token
 from fastapi.responses import JSONResponse
 from jose import JWTError
-
-
-# Конфигурация JWT
-SECRET_KEY = "your-secret-key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
-REFRESH_TOKEN_EXPIRE_DAYS = 7
+from config import *
 
 def create_access_token(data: dict):
     to_encode = data.copy()

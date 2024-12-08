@@ -10,10 +10,9 @@ from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from config import START_WITH_TEST
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, FileResponse
-from sqlalchemy.exc import IntegrityError
 from contextlib import asynccontextmanager
 from db import init_db
 from pathlib import Path
@@ -107,4 +106,4 @@ if not START_WITH_TEST:
             else:
                 SECRET_KEY = key_file.read_text()
 
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+        uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
