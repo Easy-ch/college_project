@@ -49,6 +49,33 @@ async def send_registration_email(email: str, confirmation_url: str):
         )
     
 
+
+async def send_reset_email(email: str, confirmation_url: str):
+    message = MessageSchema(
+        subject="Смена пароля",
+        recipients=[email],
+        body=f"Перейдите по ссылке для смены пароля, если вы не отправляли запрос, НЕ ПЕРЕХОДИТЕ ПО ССЫЛКЕ!!: {confirmation_url}",
+        subtype="plain",
+    )
+    fm = FastMail(email_config)
+
+    try:
+        await fm.send_message(message)
+    except SMTPRecipientsRefused as e:
+        invalid_recipients = list(e.recipients.keys())
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "Некорректный адрес получателя.",
+                "invalid_recipients": invalid_recipients,
+            }
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ошибка отправки письма."
+        )
+
 def validation_translate(message: str, field: str):
     """Переводит сообщения валидации на русский язык."""
     

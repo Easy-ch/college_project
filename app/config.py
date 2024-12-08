@@ -4,9 +4,9 @@ from itsdangerous import URLSafeTimedSerializer
 START_WITH_TEST = False
 DATABASE_URL    = "postgresql+asyncpg://server_root:qwertyuiop1@188.242.78.13:5432/project"
 SECRET_KEY      = ""
-SERVER_ADDRES   = "http://188.242.78.13/auth"
+# SERVER_ADDRES   = "http://188.242.78.13/auth"
 # SERVER_ADDRES = "http://0.0.0.0:8000/auth"
-# SERVER_ADDRES = "http://127.0.0.1:8000/auth"
+SERVER_ADDRES = "http://127.0.0.1:8000/auth"
 IS_DEBUG        = True
 serializer      = URLSafeTimedSerializer(SECRET_KEY)
 

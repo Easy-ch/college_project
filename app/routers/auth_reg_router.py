@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request,Form
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from db import get_db
 from models.models import User
-from utils import hash_password, verify_password, send_registration_email
+from utils import hash_password, verify_password, send_registration_email,send_reset_email
 from jwt_utils import verify_token, create_refresh_token, create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
-from schemas.schemas import RegisterUser
+from schemas.schemas import RegisterUser,ResetPasswordModel
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy import select
 from config import *
@@ -171,3 +171,63 @@ async def protected_route(user: dict = Depends(get_current_user), db: AsyncSessi
     return JSONResponse({
         "message": "Access token data is incorrect"
     })
+
+
+
+@auth_reg_router.post('/forgot-password')
+async def forgot_password(email:str = Form(...),db: AsyncSession = Depends(get_db)):
+    query = select(User).where((User.email == email))
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Такого пользователя не существует")
+    
+    token = serializer.dumps(user.email, salt="reset-password")
+
+    confirmation_url = f"{SERVER_ADDRES}/reset-password?token={token}"
+
+    await send_reset_email(user.email, confirmation_url)
+
+    return JSONResponse({
+        "message": f"Ссылка на страницу для смены пароля отправлена на email"
+    })
+
+
+
+@auth_reg_router.post('/reset-password')
+async def reset_password(token: str,form_data: ResetPasswordModel,db: AsyncSession = Depends(get_db)):
+    try:
+        email = serializer.loads(token, salt="reset-password", max_age=300)
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Токен недействителен или истек."
+        )
+
+    query = select(User).where(User.email == email)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Пользователь не найден."
+        )
+    
+    if verify_password(form_data.new_password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Новый пароль не должен совпадать со старым."
+        )
+
+    user.password = hash_password(form_data.new_password)
+
+    try:
+        await db.commit()
+        return {"message": "Пароль успешно обновлен."}
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ошибка при обновлении пароля."
+        )

@@ -48,3 +48,11 @@ class LoginUser(BaseModel):
                           min_length=8,
                           max_length=30,
                           description="Пароль")
+
+
+
+class ResetPasswordModel(BaseModel):
+    new_password: str = Field(...,
+                          min_length=8,
+                          max_length=30,
+                          description="Пароль")
