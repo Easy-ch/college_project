@@ -114,8 +114,6 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
     access_token = create_access_token({"sub": user.username})
     refresh_token = create_refresh_token({"sub": user.username})
 
-    print("Password match:", verify_password(form_data.password, user.password))
-
     response = JSONResponse({
         "access_token": access_token
     })
