@@ -106,4 +106,4 @@ if not START_WITH_TEST:
             else:
                 SECRET_KEY = key_file.read_text()
 
-        uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

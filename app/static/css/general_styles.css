@@ -89,6 +89,8 @@ main {
     align-items: center;
 
     a {
+        display: flex;
+        align-items: center;
         font-weight: 300;
 
         color: rgb(255, 255, 255);
