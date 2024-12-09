@@ -61,12 +61,14 @@
         
                 <div class="input-container">
                     <label for="password">Пароль</label>
-                    <input type="password" id="password" name="password" placeholder="Придумайте пароль" required>
+                    <input id="password" type="password" name="password" placeholder="Придумайте пароль" required>
+                    <input id="show_password" onclick="check_password()" type="checkbox" class="password-checkbox"> Показать пароль
                 </div>
         
                 <div class="input-container">
                     <label for="confirm-password">Подтверждение пароля</label>
-                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Повторите пароль" required>
+                    <input id="password_confirm" type="password" name="password" placeholder="Повторите пароль" required>
+                    <input id="show_password_confirm" onclick="check_password_confirm()" type="checkbox" class="password-checkbox"> Показать пароль
                 </div>
         
                 <p id="error-message"></p>
