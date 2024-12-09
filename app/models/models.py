@@ -16,3 +16,6 @@ class User(Base):
         UniqueConstraint("email", name="uq_user_email"),
         UniqueConstraint("username", name="uq_user_username"),
     )
+
+    phone_number = Column(String(15), nullable=True, unique=True)
+    
