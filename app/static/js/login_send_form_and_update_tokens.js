@@ -18,7 +18,7 @@ document.getElementById('loginForm').onsubmit = async (e) => {
             window.location.href = '/profile';
         } else {
             const error = await response.json();
-            error_tag.textContent = error.detail[0]?.message || "Ошибка входа. Проверьте введённые данные.";
+            error_tag.textContent = error.detail[0]['message'] || "Ошибка входа. Проверьте введённые данные.";
         }
     } catch (error) {
         error_tag.textContent = "Не удалось выполнить запрос. Проверьте подключение к интернету.";
