@@ -173,7 +173,6 @@ async def protected_route(user: dict = Depends(get_current_user), db: AsyncSessi
     })
 
 
-
 @auth_reg_router.post('/forgot-password')
 async def forgot_password(email:str = Form(...),db: AsyncSession = Depends(get_db)):
     query = select(User).where((User.email == email))
@@ -191,7 +190,6 @@ async def forgot_password(email:str = Form(...),db: AsyncSession = Depends(get_d
     return JSONResponse({
         "message": f"Ссылка на страницу для смены пароля отправлена на email"
     })
-
 
 
 @auth_reg_router.post('/reset-password')

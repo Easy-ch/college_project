@@ -5,6 +5,7 @@ body {
     font-family: 'Montserrat', "Arial", sans-serif;
     background-color: #f0f0f0;
     margin: 0;
+    scroll-behavior: smooth;
 }
 
 html {
@@ -46,7 +47,7 @@ main {
     overflow: hidden;
 }
 
-.navbar:hover {
+.navbar.active {
     height: 70px;
     width: calc(100% - 30px);
     border-radius: 6px;
@@ -91,6 +92,7 @@ main {
     a {
         display: flex;
         align-items: center;
+        height: 100%;
         font-weight: 300;
 
         color: rgb(255, 255, 255);

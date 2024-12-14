@@ -18,4 +18,3 @@ class User(Base):
     )
 
     phone_number = Column(String(15), nullable=True, unique=True)
-    

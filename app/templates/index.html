@@ -60,27 +60,29 @@
         </div>
 
         <section id="services">
-            <div class="text-lines-black" style="justify-self: center;"><h1 style="font-weight: 500; padding-inline: 20px;">Популярные услуги</h1></div>
+            <div class="text-lines-black" style="margin-inline: center;"><h1 style="font-weight: 500; padding-inline: 20px;">Популярные услуги</h1></div>
         
-            <div class="services-grid">
-                {% for service in services %}
-                    <div style="height: 154px; width: calc((100vw - 36px * 2) / 2 - 20px);">
-                        <div style="max-height: 130px;">
-                            <div class="services-card">
-                                <div class="image" style="background-image: url('{{ service.image }}');"></div>
-                                <div>
-                                    <h3>{{ service.title }}</h3>
-                                    <p>{{ service.description }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+            
 
         </section>
     </main>
     
+
+    <!-- <div class="services-grid">
+        {% for service in services %}
+            <div style="height: 154px; width: calc((100vw - 36px * 2) / 2 - 20px);">
+                <div style="max-height: 130px;">
+                    <div class="services-card">
+                        <div class="image" style="background-image: url('{{ service.image }}');"></div>
+                        <div>
+                            <h3>{{ service.title }}</h3>
+                            <p>{{ service.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div> -->
 
     <footer>
         <section id="Contacts" style="background-color: #1b1b1b;">

@@ -1,54 +1,16 @@
 const navbar = document.querySelector('.navbar');
-const main = document.querySelector('main');
 
-window.addEventListener('resize', resetMargin);
+navbar.addEventListener('mouseenter', async () => {
+    navbar.classList.add('active');
+});
 
-function applyMarginOnHover() {
-    navbar.removeEventListener('mouseenter', increaseMargin);
-    navbar.removeEventListener('mouseleave', resetMargin);
+navbar.addEventListener('mouseleave', async () => {
+    navbar.classList.remove('active');
+});
 
-    if (window.innerWidth > 700) {
-        navbar.addEventListener('mouseenter', increaseMargin);
-        navbar.addEventListener('mouseleave', resetMargin);
-    } else {
-        main.style.marginTop = '60px';
-        navbar.classList.remove('force-hover');
-    }
+async function sleepNavbar() {
+    setTimeout(() => { navbar.classList.add('active'); }, 40);
+    setTimeout(() => { navbar.classList.remove('active'); }, 1000);
 }
 
-function increaseMargin() {
-    main.style.marginTop = '110px';
-}
-
-function resetMargin() {
-    if (window.scrollY !== 0) {
-        main.style.marginTop = '70px';
-    }
-}
-
-applyMarginOnHover();
-window.addEventListener('resize', applyMarginOnHover);
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    function checkScrollPosition() {
-        if (window.innerWidth > 700) {
-            if (window.scrollY === 0) {
-                navbar.classList.add('force-hover');
-                increaseMargin();
-            } else {
-                navbar.classList.remove('force-hover');
-                resetMargin();
-            }
-        }
-        //  else {
-
-        // }
-    }
-
-    checkScrollPosition();
-    window.addEventListener('scroll', checkScrollPosition);
-}); 
-
-
- 
+document.addEventListener('DOMContentLoaded', sleepNavbar());

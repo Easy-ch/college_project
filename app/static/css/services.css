@@ -9,7 +9,7 @@ body {
     padding: 0;
 }
 
-.services-container {
+/* .services-container {
     gap: 20px;
     padding: 20px;
     display: flex; 
@@ -107,4 +107,157 @@ body {
   
 .card-button button:hover::before {
   opacity: 1;
+} */
+
+
+
+.content-container {
+    margin-top: 40px;
+    width: 90vw;
+    margin-inline: auto;
+}
+
+.calalog-grid {
+    max-width: 90vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    max-width: 1600px;
+    margin-inline: auto;
+}
+
+.calalog-grid-item {
+    opacity: 0;
+    transform: translateX(-50px); 
+    filter: blur(10px);
+}
+
+.calalog-grid-item.active {
+    animation: fadeInRight 1s ease forwards;
+}
+
+@keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+        filter: blur(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0);
+    }
+}
+
+.card-of-calalog {
+    background-color: rgb(255, 255, 255);
+    padding: 5px;
+    outline: 1px solid rgba(0, 0, 0, 0);
+
+    height: calc(100% - 9px);
+
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0);
+
+    transition: border-radius 0.4s ease,
+                outline-color 0.4s ease,
+                box-shadow 0.4s ease;
+}
+
+.card-of-calalog:hover {
+    outline: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);;
+}
+
+.card-top img {
+    width: calc((90vw - 70px) / 4); /*   '-70px' --- (gap on grid = 10px * 3) + (card padding = 5px * 8)   */
+    height: 230px;
+    border-radius: 3px;
+    object-fit: cover;
+}
+
+.card-description h4 {
+    color: black;
+    text-align: center;
+    font-weight: 500;
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-block: 6px;
+    margin-inline: calc(((90vw - 70px) / 4) / 12);
+
+    button {
+        font-family: 'Montserrat', "Arial", sans-serif;
+        color: rgb(0, 0, 0);
+        background-color: rgb(211, 211, 211);
+        border: 0;
+        outline: 0.5px solid rgba(255, 255, 255);
+        padding: 8px 16px;
+
+        transition: border-radius 0.2s ease;
+    }
+
+    button:hover {
+        border-radius: 6px;
+    }
+
+    button.active{
+        background-color: rgb(0, 0, 0);
+    }
+}
+
+.card-of-calalog a {
+    text-decoration: none;
+    color: white;
+}
+
+@media (max-width: 1050px) {
+    .calalog-grid {
+        max-width: 90vw;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+    }
+
+    .card-top img {
+        width: calc((90vw - 60px) / 3);
+        height: 200px;
+        border-radius: 3px;
+        object-fit: cover;
+    }
+}
+
+@media (max-width: 750px) {
+    .calalog-grid {
+        max-width: 90vw;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .card-top img {
+        width: calc((90vw - 50px) / 2);
+        height: 160px;
+        border-radius: 3px;
+        object-fit: cover;
+    }
+}
+
+@media (max-width: 450px) {
+    .calalog-grid {
+        max-width: 90vw;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .card-top img {
+        width: calc((90vw - 10px));
+        height: 160px;
+        border-radius: 3px;
+        object-fit: cover;
+    }
 }

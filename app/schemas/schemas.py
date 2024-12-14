@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field, model_validator
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import HTTPException
 from fastapi import status
 from pydantic_extra_types.phone_numbers import PhoneNumber
 import re
@@ -64,7 +64,7 @@ class ResetPasswordModel(BaseModel):
 class ProfileModel(BaseModel):
     phone_number: PhoneNumber
 
-    @model_validator('phone_number')
+    @model_validator(mode="after")
     def validate_phone_number(cls, value):
         pattern = r'^\+7\d{10}$'
         if not re.match(pattern, str(value)):
