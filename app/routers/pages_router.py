@@ -44,7 +44,6 @@ async def logout_route(response: Response, request:Request):
         samesite="Strict", 
         max_age=0  
     )
-
     return {"message": f"loggout"}
 
 @router.get('/auth/forgot-password')
@@ -54,3 +53,5 @@ async def forgot_password(request:Request):
 @router.get('/auth/reset-password')
 async def reset_password(request:Request,token:str):
       return templates.TemplateResponse('reset-password.html', {"request": request,'token':token})
+
+

@@ -59,6 +59,118 @@ h3 {
     padding: 10px;
 }
 
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #000000;
+}
+
+input[type="tel"],
+input[type="phone-number"] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+input[type="tel"]:focus,
+input[type="phone-number"]:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+#phone_form {
+    display: flex;
+
+    width: 100%;
+    margin-top: 10px;
+
+    margin-inline: auto;
+
+    justify-content: center;
+    
+    button {
+        display: flex;
+
+        justify-content: center;
+        font-family: 'Montserrat', "Arial", sans-serif;
+        font-size: 16px;
+
+        width: 90%;
+        padding: 10px 8px;
+
+        border: 0;
+        border-radius: 10px;
+
+        background-color: black;
+        color: white;
+        
+        transition: border-radius 0.4s ease,
+                    width 0.4s ease;
+    }
+
+    button:hover {
+        border-radius: 0px;
+        width: 100%;
+    }
+}
+button {
+    display: flex;
+
+    justify-content: center;
+    font-family: 'Montserrat', "Arial", sans-serif;
+    font-size: 12px;
+    justify-self: center;
+
+    width: 90%;
+    padding: 10px 8px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background-color: black;
+    color: white;
+    
+    transition: border-radius 0.4s ease,
+                width 0.4s ease;
+}
+
+button:hover {
+    border-radius: 0px;
+    width: 100%;
+}
+
+#error-message {
+    color: red;
+    font-size: 12px;
+    height: 1em;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+
+.avatar {
+    display: flex;
+    justify-self: center;
+    width: 150px;
+    text-align: center;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #4a90e2;
+    color: white;
+    font-weight: bold;
+    font-size: 50px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+
 @media (max-width: 800px) {
     .grid-1-2 {
         grid-template-columns: auto;

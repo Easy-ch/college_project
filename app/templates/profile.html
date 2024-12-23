@@ -51,8 +51,7 @@
             <div class="grid-1-2">
                 <h1 style="font-weight: 400; margin-top: 6px; text-align: center; grid-column: span 2;">Личный кабинет</h1>
                 <div class="profile-data">
-                    <img src="../static/img/pass.jpg"/>
-
+                    <div class="avatar" id="avatar"></div>
                     <div class="private-data">
                         <h3>Личные данные</h3>
                         <div class="private-data-item">
@@ -64,13 +63,36 @@
                             <p style="font-weight: 500; margin-bottom: 8px;">Электронная почта:</p>
                             <p id="email" style="text-indent: 10px; color: rgb(29, 96, 255); margin-top: 8px;">Не указано</p>
                         </div>
-
                         <div class="private-data-item">
-                            <p style="font-weight: 500; margin-bottom: 8px;">Телефон:</p>
-                            <p id="phone-number" style="text-indent: 10px; color: rgb(29, 96, 255); margin-top: 8px;">Не указано</p>
+                                <p style="font-weight: 500; margin-bottom: 8px;">Телефон:</p> 
+                                <p id="number" style="text-indent: 10px; color: rgb(29, 96, 255); margin-top: 8px;">Не указано</p>
                         </div>
+                        <button id="edit-button">Редактировать  </button>
+                        <form id="phone_form" method="put" style="display: none;" >
+                            <div class="private-data-item">
+                                <label for="phone_number" style="font-weight: 500; margin-bottom: 8px;">Телефон</label>
+                                <input id="phone_number" type="tel" name="phone_number" placeholder="Введите ваш телефон" required>
+                                <p id="error-message"></p>
+                                <button type="submit">Подтвердить</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
+                <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                        const editButton = document.getElementById("edit-button");
+                        const phoneForm = document.getElementById("phone_form");
+                        editButton.addEventListener("click", () => {
+                            if (phoneForm.style.display === "none") {
+                                phoneForm.style.display = "block"; 
+                                editButton.textContent = "Отменить"; 
+                            } else {
+                                phoneForm.style.display = "none"; 
+                                editButton.textContent = "Изменить"; 
+                                }
+                            });
+                        });
+                </script>
 
                 <div class="other-data">
                     <h1 style="text-align: center; font-weight: 500; margin-top: 8px;">Другая информация</h1>
@@ -128,7 +150,8 @@
 
     <script  src="../static/js/general_scripts.js" defer></script>
     <script src="../static/js/logout.js" defer></script>
-    <script src="../static/js/profile_update_token.js" defer></script>
+    <script type="module"  src="../static/js/profile_update_token.js" defer></script>
     <script src="../static/js/isauth.js"></script>
+    <script type="module"  src="../static/js/profile.js"></script>
 </body>
 </html>

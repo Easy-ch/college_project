@@ -117,7 +117,7 @@ async function fetchProtectedRoute() {
 
 fetchProtectedRoute();
 
-async function check_password() {
+ async function check_password() {
     if (document.getElementById('show_password').checked){
         document.getElementById('password').setAttribute('type', 'text');
     } else {

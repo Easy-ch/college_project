@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, model_validator
+from pydantic import BaseModel, EmailStr, Field, model_validator,field_validator
 from fastapi.exceptions import HTTPException
 from fastapi import status
 from pydantic_extra_types.phone_numbers import PhoneNumber
@@ -62,11 +62,17 @@ class ResetPasswordModel(BaseModel):
     
 
 class ProfileModel(BaseModel):
-    phone_number: PhoneNumber
+    phone_number: str = Field(description="Номер телефона в формате +7XXXXXXXXXX")
 
-    @model_validator(mode="after")
+    @field_validator('phone_number')
     def validate_phone_number(cls, value):
         pattern = r'^\+7\d{10}$'
         if not re.match(pattern, str(value)):
-            raise ValueError('Телефонный номер должен начинаться на +7')
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail={
+                    "field": ["phone_number"],
+                    "message": "Невалидные данные"
+                }
+            )
         return value

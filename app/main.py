@@ -6,6 +6,7 @@ import pytest
 from fastapi import FastAPI, Request
 from routers.pages_router import router as router_pages
 from routers.auth_reg_router import auth_reg_router as router_validate
+from routers.get_changes_router import get_changes_router as router_changes
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +19,7 @@ from db import init_db
 from pathlib import Path
 from secrets import token_urlsafe
 from utils import validation_translate
+
 
 green = "\033[32m"
 reset = "\033[0m"
@@ -57,6 +59,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(router_pages)
 app.include_router(router_validate, prefix="/auth")
+app.include_router(router_changes,prefix='/changes')
 app.mount('/static', StaticFiles(directory=Path(__file__).parent / 'static'))
 origins = [
     # "http://localhost",

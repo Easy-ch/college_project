@@ -28,7 +28,7 @@ async function getAndSaveAccessToken() {
     }
 }
 
-async function getUserData(accessToken) {
+export async function getUserData(accessToken) {
     try {
         const response = await fetch("/auth/get_user_data", {
             method: "GET",
@@ -83,9 +83,49 @@ async function fetchProtectedRoute() {
     if (user_data) {
         document.getElementById("username").textContent = user_data['username'];
         document.getElementById("email").textContent = user_data['email'];
+        document.getElementById("number").textContent = user_data['phone'];
     } else 
         window.location.href = '/login';
 }
 
 
 fetchProtectedRoute();
+
+
+function putPhoneNumber() {
+    document.getElementById("phone_form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+    
+        const phone_number = document.getElementById("phone_number").value;
+        const errorMessage = document.getElementById("error-message");
+        const response = await fetch("/changes/upload_phone_field", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+            body: JSON.stringify({ phone_number }),
+        });
+    
+
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            if (errorData.detail) {
+                const errorText = errorData.detail[0]?.message || "Введите номер телефона в формате +7XXXXXXXXXX";
+                errorMessage.textContent = errorText;
+                console.log(errorData);
+            } else {
+                errorMessage.textContent = "Не удалось обновить телефон. Проверьте данные.";
+            }
+        } else {
+            const successData = await response.json();
+            errorMessage.textContent = successData.message || "Успешно добавлен телефон"
+            errorMessage.style = "height: min-content; color: green;";
+            document.getElementById("phone_form").reset();
+        }
+    });
+}
+document.addEventListener("DOMContentLoaded", putPhoneNumber);
+
+
