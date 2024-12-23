@@ -46,6 +46,7 @@ async def logout_route(response: Response, request:Request):
     )
     return {"message": f"loggout"}
 
+
 @router.get('/auth/forgot-password')
 async def forgot_password(request:Request):
      return templates.TemplateResponse('forgot_password.html', {"request": request})

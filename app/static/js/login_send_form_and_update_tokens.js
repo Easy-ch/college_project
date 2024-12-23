@@ -133,5 +133,3 @@ async function check_password_confirm() {
         document.getElementById('password_confirm').setAttribute('type', 'password');
     }
 }
-
-
