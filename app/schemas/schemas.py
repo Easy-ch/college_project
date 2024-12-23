@@ -7,25 +7,21 @@ import re
 
 class RegisterUser(BaseModel):
     email: EmailStr
+    
     username: str = Field(...,
-                            min_length=4,
-                            max_length=50,
-                            pattern=r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$'
-                        )
+                          min_length=4,
+                          max_length=50,
+                          pattern=r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$')
     
-    password: str = Field(
-                        ...,
-                        min_length=8,
-                        max_length=50,
-                        pattern=r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$'
-                    )
+    password: str = Field(...,
+                          min_length=8,
+                          max_length=50,
+                          pattern=r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$')
     
-    password_confirm: str = Field(
-                                ...,
-                                min_length=8,
-                                max_length=50,
-                                pattern=r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$'
-                            )
+    password_confirm: str = Field(...,
+                                  min_length=8,
+                                  max_length=50,
+                                  pattern=r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$')
 
     @model_validator(mode="after")
     def validate_passwords_match(self):
@@ -56,9 +52,9 @@ class LoginUser(BaseModel):
 
 class ResetPasswordModel(BaseModel):
     new_password: str = Field(...,
-                          min_length=8,
-                          max_length=30,
-                          description="Пароль")
+                              min_length=8,
+                              max_length=30,
+                              description="Пароль")
     
 
 class ProfileModel(BaseModel):

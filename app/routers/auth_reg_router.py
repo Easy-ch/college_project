@@ -16,6 +16,14 @@ from fastapi.security import OAuth2PasswordBearer
 auth_reg_router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=[{ "message": "Недействительный токен" }])
+    return payload
+
+
 @auth_reg_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
     query = select(User).where((User.email == user.email) | (User.username == user.username))
@@ -43,6 +51,7 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
         await db.commit()
     except IntegrityError:
         await db.rollback()
+        
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=[{ "message": "Ошибка при сохранении пользователя." }])
 
@@ -76,15 +85,7 @@ async def confirm_email(token: str, db: AsyncSession = Depends(get_db)):
     except BadSignature:
         raise HTTPException(status_code=400,
                             detail=[{ "message": "Недействительная ссылка подтверждения." }])
-
-
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    payload = verify_token(token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=[{ "message": "Недействительный токен" }])
-    return payload
-    
+        
 
 @auth_reg_router.post("/login")
 async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
@@ -138,21 +139,8 @@ async def refresh_token(request: Request, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=[{ "message": "Пользователь не найден" }])
 
-    access_token = create_access_token({"sub": user.username})
-    return {"access_token": access_token}
-
-
-@auth_reg_router.post("/verify-token")
-async def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
-    payload = verify_token(token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                            detail=[{ "message":"Недействительный или истёкший токен" }])
-
-    return JSONResponse({
-        "message": "Токен действителен",
-        "data": payload
-    })
+    access_token = create_access_token( {"sub": user.username} )
+    return { "access_token": access_token }
 
 
 @auth_reg_router.get("/get_user_data")
@@ -174,16 +162,18 @@ async def protected_route(user: dict = Depends(get_current_user), db: AsyncSessi
 
 
 @auth_reg_router.post('/forgot-password')
-async def forgot_password(email:str = Form(...),db: AsyncSession = Depends(get_db)):
+async def forgot_password(email: str = Form(...), db: AsyncSession = Depends(get_db)):
     query = select(User).where((User.email == email))
     result = await db.execute(query)
     user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Такого пользователя не существует")
-    
-    token = serializer.dumps(user.email, salt="reset-password")
 
-    confirmation_url = f"{SERVER_ADDRES}/reset-password?token={token}"
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=[{ "message": "Такого пользователя не существует" }])
+    
+    token = serializer.dumps(user.email, salt="reset_password")
+
+    confirmation_url = f"{SERVER_ADDRES}/reset_password?token={token}"
 
     await send_reset_email(user.email, confirmation_url)
 
@@ -193,13 +183,13 @@ async def forgot_password(email:str = Form(...),db: AsyncSession = Depends(get_d
 
 
 @auth_reg_router.post('/reset-password')
-async def reset_password(token: str,form_data: ResetPasswordModel,db: AsyncSession = Depends(get_db)):
+async def reset_password(token: str, form_data: ResetPasswordModel, db: AsyncSession = Depends(get_db)):
     try:
         email = serializer.loads(token, salt="reset-password", max_age=300)
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Токен недействителен или истек."
+            detail=[{ "message": "Токен недействителен или истек" }]
         )
 
     query = select(User).where(User.email == email)
@@ -209,23 +199,26 @@ async def reset_password(token: str,form_data: ResetPasswordModel,db: AsyncSessi
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Пользователь не найден."
+            detail=[{ "message": "Пользователь не найден" }]
         )
     
     if verify_password(form_data.new_password, user.password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Новый пароль не должен совпадать со старым."
+            detail=[{ "message": "Новый пароль не должен совпадать со старым" }]
         )
 
     user.password = hash_password(form_data.new_password)
 
     try:
         await db.commit()
-        return {"message": "Пароль успешно обновлен."}
+        return JSONResponse({
+            "message": "Пароль успешно обновлен"
+        })
+    
     except IntegrityError:
         await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Ошибка при обновлении пароля."
+            detail=[{ "message": "Ошибка при обновлении пароля" }]
         )

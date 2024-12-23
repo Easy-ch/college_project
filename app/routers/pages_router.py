@@ -46,11 +46,3 @@ async def logout_route(response: Response, request:Request):
     )
 
     return {"message": f"loggout"}
-
-@router.get('/auth/forgot-password')
-async def forgot_password(request:Request):
-     return templates.TemplateResponse('forgot_password.html', {"request": request})
-
-@router.get('/auth/reset-password')
-async def reset_password(request:Request,token:str):
-      return templates.TemplateResponse('reset-password.html', {"request": request,'token':token})
