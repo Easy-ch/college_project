@@ -49,7 +49,7 @@
     <main>
         <div class="main-section">
             <div class="grid-1-2">
-                <h1 style="font-weight: 400; margin-top: 6px; text-align: center; grid-column: span 2;">Личный кабинет</h1>
+                <h1 >Личный кабинет</h1>
                 <div class="profile-data">
                     <div class="avatar" id="avatar"></div>
                     <div class="private-data">
@@ -67,31 +67,47 @@
                                 <p style="font-weight: 500; margin-bottom: 8px;">Телефон:</p> 
                                 <p id="number" style="text-indent: 10px; color: rgb(29, 96, 255); margin-top: 8px;">Не указано</p>
                         </div>
-                        <button id="edit-button">Редактировать  </button>
-                        <form id="phone_form" method="put" style="display: none;" >
-                            <div class="private-data-item">
-                                <label for="phone_number" style="font-weight: 500; margin-bottom: 8px;">Телефон</label>
-                                <input id="phone_number" type="tel" name="phone_number" placeholder="Введите ваш телефон" required>
-                                <p id="error-message"></p>
-                                <button type="submit">Подтвердить</button>
-                            </div>
-                        </form>
+                        <button id="edit-button">Редактировать</button>
+                            <form id="form" method="put">
+                                <div class="private-data-special" id="changes_form">
+                                    <h3 style="margin-top:0;">Редактировать Профиль</h3>
+                                    <label for="username_change" style="font-weight: 500; margin-bottom: 8px;">Имя пользователя</label>
+                                    <input id="username_change" type="username_change" name="username_change" placeholder="Ваш никнейм">
+                                    <label for="phone_number" style="font-weight: 500; margin-bottom: 8px;">Телефон</label>
+                                    <input id="phone_number" type="tel" name="phone_number" placeholder="Введите ваш телефон">
+                                    <div class="old-password" style="position: relative;">
+                                        <label for="phone_number" style="font-weight: 500; margin-bottom: 8px;">Старый пароль</label>
+                                        <input id="password" type="password" name="password" placeholder="Введите старый пароль">
+                                        <a href="#" id="a-teg"><img src="../static/img/view.svg" style="position: absolute; width: 20px; height: 20px;top: 55%; left: 90%; display: inline-block;" alt=""></a>
+                                        <a href="#" id="a-teg"><img src="../static/img/noview.svg" style="position: absolute; width: 20px; height: 20px;top: 55%; left: 90%; display: none;" alt=""></a>
+                                    </div>
+                                    <div class="new-password" style="position: relative;">
+                                        <label for="new_password" style="font-weight: 500; margin-bottom: 8px;">Новый пароль</label>
+                                        <input id="new_password" type="password" name="new_password" placeholder="Введите ваш новый пароль">
+                                        <a href="#"><img src="../static/img/view.svg" style="position: absolute; width: 20px; height: 20px;top: 55%; left: 90%; display: inline-block;" alt=""></a>
+                                        <a href="#" id="a-teg"><img src="../static/img/noview.svg" style="position: absolute; width: 20px; height: 20px;top: 55%; left: 90%; display: none;" alt=""></a>
+                                    </div>
+
+                                    <p id="error-message"></p>
+                                    <button type="submit">Подтвердить</button>
+                                </div>
+                            </form>
                     </div>
                 </div>
                 <script>
-                        document.addEventListener("DOMContentLoaded", () => {
+                            document.addEventListener("DOMContentLoaded", () => {
                         const editButton = document.getElementById("edit-button");
-                        const phoneForm = document.getElementById("phone_form");
+                        const phoneForm = document.getElementById("changes_form");
+
                         editButton.addEventListener("click", () => {
-                            if (phoneForm.style.display === "none") {
-                                phoneForm.style.display = "block"; 
-                                editButton.textContent = "Отменить"; 
+                            phoneForm.classList.toggle("active"); 
+                            if (phoneForm.classList.contains("active")) {
+                                editButton.textContent = "Отменить";
                             } else {
-                                phoneForm.style.display = "none"; 
-                                editButton.textContent = "Изменить"; 
-                                }
-                            });
+                                editButton.textContent = "Редактировать";
+                            }
                         });
+                    });
                 </script>
 
                 <div class="other-data">
@@ -152,6 +168,6 @@
     <script src="../static/js/logout.js" defer></script>
     <script type="module"  src="../static/js/profile_update_token.js" defer></script>
     <script src="../static/js/isauth.js"></script>
-    <script type="module"  src="../static/js/profile.js"></script>
+    <script type="module"  src="../static/js/profile.js" defer></script>
 </body>
 </html>

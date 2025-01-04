@@ -43,6 +43,7 @@ async def send_registration_email(email: str, confirmation_url: str):
             }
         )
     except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=500,
             detail=f"Ошибка отправки письма."
@@ -121,9 +122,12 @@ def validation_translate(message: str, field: str):
         case "String should have at least 8 characters":
             return f"Длина поля '{field}' должна быть не меньше 8 символов."
         
+        case "String should have at most 30 characters":
+            return f"Длина поля '{field}' должна быть не больше 30 символов."
+        
         case "String should have at most 50 characters":
-            return f"Длина поля '{field}' должна быть не больше 50 символов."
-
+                    return f"Длина поля '{field}' должна быть не больше 50 символов."
+        
         case "value is not a valid email address: An email address must have an @-sign.":
             return f"Поле '{field}' должно содержать символ '@'."
 

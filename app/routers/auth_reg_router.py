@@ -9,7 +9,7 @@ from models.models import User
 from utils import hash_password, verify_password, send_registration_email,send_reset_email
 from jwt_utils import verify_token, create_refresh_token, create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
-from schemas.schemas import RegisterUser,ResetPasswordModel
+from schemas.schemas import RegisterUser,ResetPasswordModel,LoginUser
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy import select
 from config import *
@@ -32,20 +32,34 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
     query = select(User).where((User.email == user.email) | (User.username == user.username))
     result = await db.execute(query)
-    existing_users = result.scalars().all()
-    if existing_users:
-        for existing_user in existing_users:
-            if not existing_user.isAuthorized:
-                token = serializer.dumps(user.email, salt="email-confirmation")
-                confirmation_url = f"{SERVER_ADDRES}/confirm-email?token={token}"
-                await send_registration_email(user.email, confirmation_url)
+    existing_user = result.scalar_one_or_none()
+
+    if existing_user:
+        if existing_user.isAuthorized:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail={ "message": "Пользователь с таким email или username уже существует" })
+        elif not existing_user.isAuthorized:
+            existing_user.username = user.username
+            existing_user.email = user.email
+            existing_user.password = hash_password(user.password)
+            existing_user.isAuthorized = False
+
+            token = serializer.dumps(user.email, salt="email-confirmation")
+            confirmation_url = f"{SERVER_ADDRES}/confirm-email?token={token}"
+            await send_registration_email(user.email, confirmation_url)
+
+            try:
+                await db.commit()
+            except IntegrityError:
                 await db.rollback()
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                    detail=[{ "message": "Пользователь не подтвержден, ссылка для повторного подтверждения отправлена на почту" }])
-    else:
-        await db.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=[{ "message": "Пользователь с таким email или username уже существует" }])
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail={"message": "Ошибка при обновлении данных пользователя."}
+                )
+
+            return {
+                "message": "Данные пользователя обновлены. Подтвердите регистрацию по ссылке, отправленной по электронной почте"
+            }
 
     token = serializer.dumps(user.email, salt="email-confirmation")
 
@@ -65,7 +79,7 @@ async def register_user(user: RegisterUser, db: AsyncSession = Depends(get_db)):
         await db.rollback()
         
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=[{ "message": "Ошибка при сохранении пользователя." }])
+                            detail={ "message": "Ошибка при сохранении пользователя." })
 
     return JSONResponse({
         "message": f"Подтвердите регистрацию по ссылке, отправленной по электронной почте"
@@ -83,7 +97,7 @@ async def confirm_email(token: str,request: Request, db: AsyncSession = Depends(
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail=[{ "message": "Пользователь не найден."}])
+                                detail={ "message": "Пользователь не найден."})
 
         user.isAuthorized = True
         await db.commit()
@@ -95,33 +109,25 @@ async def confirm_email(token: str,request: Request, db: AsyncSession = Depends(
 
     except SignatureExpired:
         raise HTTPException(status_code=400,
-                            detail=[{ "message": "Срок действия ссылки истек. Пожалуйста, запросите новую." }])
+                            detail={ "message": "Срок действия ссылки истек. Пожалуйста, запросите новую." })
     except BadSignature:    
         raise HTTPException(status_code=400,
-                            detail=[{ "message": "Недействительная ссылка подтверждения." }])
+                            detail={ "message": "Недействительная ссылка подтверждения." })
 
     
     return templates.TemplateResponse('confirm-email.html',{"request":request,"message": "Email успешно подтверждён"})
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    payload = verify_token(token)
-    if not payload:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=[{ "message": "Недействительный токен" }])
-    return payload
-    
 
 @auth_reg_router.post("/login")
-async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
-    query = select(User).where((User.username == form_data.username) | (User.email == form_data.username))
+async def login_user(user_data: LoginUser, db: AsyncSession = Depends(get_db)):
+    query = select(User).where((User.username == user_data.login) | (User.email == user_data.login))
     result = await db.execute(query)
     user = result.scalar_one_or_none()
-
-    if not user or not verify_password(form_data.password, user.password):
+    
+    if not user or not verify_password(user_data.password, user.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=[{ "message": "Неверные учетные данные" }])
-
     if not user.isAuthorized:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=[{ "message": "Email не подтвержден" }])
@@ -150,12 +156,12 @@ async def refresh_token(request: Request, db: AsyncSession = Depends(get_db)):
     refresh_token = request.cookies.get("refresh_token")
     if not refresh_token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=[{ "message": "Отсутствует refresh token" }])
+                            detail={ "message": "Отсутствует refresh token" })
 
     payload = verify_token(refresh_token)
     if not payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=[{ "message": "Недействительный refresh token" }])
+                            detail={ "message": "Недействительный refresh token" })
 
     query = select(User).where(User.username == payload["sub"])
     result = await db.execute(query)
@@ -163,7 +169,7 @@ async def refresh_token(request: Request, db: AsyncSession = Depends(get_db)):
 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=[{ "message": "Пользователь не найден" }])
+                            detail={ "message": "Пользователь не найден" })
 
     access_token = create_access_token( {"sub": user.username} )
     return { "access_token": access_token }
@@ -195,11 +201,11 @@ async def forgot_password(email: str = Form(...), db: AsyncSession = Depends(get
 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=[{ "message": "Такого пользователя не существует" }])
+                            detail={ "message": "Такого пользователя не существует" })
     
-    token = serializer.dumps(user.email, salt="reset_password")
+    token = serializer.dumps(user.email, salt="reset-password")
 
-    confirmation_url = f"{SERVER_ADDRES}/reset_password?token={token}"
+    confirmation_url = f"{SERVER_ADDRES}/reset-password?token={token}"
 
     await send_reset_email(user.email, confirmation_url)
 
@@ -225,14 +231,14 @@ async def reset_password(token: str, form_data: ResetPasswordModel, db: AsyncSes
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=[{ "message": "Пользователь не найден" }]
+            detail={ "message": "Пользователь не найден" }
 
         )
     
     if verify_password(form_data.new_password, user.password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=[{ "message": "Новый пароль не должен совпадать со старым" }]
+            detail={ "message": "Новый пароль не должен совпадать со старым" }
         )
 
     user.password = hash_password(form_data.new_password)
@@ -247,5 +253,5 @@ async def reset_password(token: str, form_data: ResetPasswordModel, db: AsyncSes
         await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=[{ "message": "Ошибка при обновлении пароля" }]
+            detail={ "message": "Ошибка при обновлении пароля" }
         )

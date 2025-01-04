@@ -7,6 +7,41 @@
     margin-bottom: 0;
 }
 
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-icon {
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    border: 0.25rem solid #ddd;
+    border-top-color: #333;
+    margin: 0 8px;
+    animation-name: spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.icon-container {
+    width: 80px;
+    display: none; 
+    justify-content: space-around;
+    align-items: center;
+}
+
+.perpetuum-mobile {
+    -webkit-animation-timing-function: cubic-bezier(0.55, 0.15, 0.45, 0.85);
+    animation-timing-function: cubic-bezier(0.55, 0.15, 0.45, 0.85);
+  }
+
+
 .registration-container {
     margin-inline: auto;
 

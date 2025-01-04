@@ -1,9 +1,8 @@
 from pydantic import BaseModel, EmailStr, Field, model_validator,field_validator
 from fastapi.exceptions import HTTPException
 from fastapi import status
-from pydantic_extra_types.phone_numbers import PhoneNumber
 import re
-
+from typing import Optional
 
 class RegisterUser(BaseModel):
     email: EmailStr
@@ -58,17 +57,44 @@ class ResetPasswordModel(BaseModel):
     
 
 class ProfileModel(BaseModel):
-    phone_number: str = Field(description="Номер телефона в формате +7XXXXXXXXXX")
+    username_change: Optional[str] = Field(default=None,max_length=50)
+    phone_number:Optional[str] = Field(None,description="Номер телефона в формате +7XXXXXXXXXX")
+    password: Optional[str] = Field(None,max_length=30)
+    new_password: Optional[str] = Field(None,max_length=30)
 
-    @field_validator('phone_number')
-    def validate_phone_number(cls, value):
-        pattern = r'^\+7\d{10}$'
-        if not re.match(pattern, str(value)):
+    @field_validator("username_change")
+    def validate_username_change(cls,value):
+        if not value:
+            return value
+        if  len(value)<4:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail={
-                    "field": ["phone_number"],
-                    "message": "Невалидные данные"
+                    "field": ["username_change"],
+                    "message": "Имя должно содержать минимум 4 символа"
                 }
             )
+        pattern = r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$'  
+        if not re.match(pattern, value):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail={
+                    "field": ["username_change"],
+                    "message": "Имя может содержать только буквы, цифры, и символы ._-"
+                }
+            )
+        return value
+
+    @field_validator('phone_number')
+    def validate_phone_number(cls, value):
+        if value:
+            pattern = r'^\+7\d{10}$'
+            if not re.match(pattern, str(value)):
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail={
+                        "field": ["phone_number"],
+                        "message": "Введите номер телефона в формате +7XXXXXXXXXX"
+                    }
+                )
         return value

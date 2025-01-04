@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+
 .main-section {
     position: relative;
     left: 50%;
@@ -18,11 +19,23 @@
     transition: max-width 0.3s ease;
 }
 
+
+
+
+
+h1{
+    font-weight: 400;
+    margin-top: 6px; 
+    text-align: center;
+    grid-column: span 2;
+}
+
 .grid-1-2 {
     display: grid;
     grid-template-columns: min-content auto;
     column-gap: 20px;
 }
+
 
 .profile-data {
     display: table-column;
@@ -59,6 +72,9 @@ h3 {
     padding: 10px;
 }
 
+
+
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -78,11 +94,47 @@ input[type="phone-number"] {
 
 input[type="tel"]:focus,
 input[type="phone-number"]:focus {
-    border-color: #007BFF;
+    border: 1px solid #000000;
     outline: none;
 }
 
-#phone_form {
+input[type="text"],
+input[type="username_change"] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+input[type="text"]:focus,
+input[type="username_change"]:focus {
+    border: 1px solid #000000;
+    outline: none;
+}
+
+input[type="password"],
+input[type="password"]
+ {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+input[type="password"]:focus,
+input[type="password"]:focus
+ {
+    border: 1px solid #000000;
+    outline: none;
+}
+
+#changes_form {
     display: flex;
 
     width: 100%;
@@ -149,6 +201,47 @@ button:hover {
     height: 1em;
     margin-bottom: 20px;
     margin-top: 0;
+    width: 90%;
+    height: min-content;
+}
+
+
+#changes_form {
+    position: fixed;
+    visibility: hidden;
+    opacity: 0;
+    top: 20%; 
+    left: -10%; 
+    width: 300px;
+    display: flex;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: left 0.5s ease,visibility 0.5s ease,opacity 0.5s ease; 
+    flex-direction: column;
+}
+
+#changes_form.active {
+    left: 35%;
+    visibility: visible;
+    opacity: 1;
+    
+}
+
+#edit-button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 320px;
+}
+
+#edit-button:hover {
+    background-color: #000000;
 }
 
 
@@ -202,19 +295,100 @@ button:hover {
         background-color: white;
         border-radius: 10px;
         padding-inline: 10px;
-
+        justify-self: center;
         box-shadow: 7px 7px 11px rgba(0, 0, 0, 0.2);
     }
 }
 
 @media (max-width: 650px) {
-    .private-data {
+    .grid-1-2 {
         grid-template-columns: auto;
+    }
+    h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .profile-data{
+        grid-column: span 2;
+        margin-top: 10px;
+        width: auto  ;
+
+    }
+    .private-data {
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        width: 100%;
+
     }
 
     h3 {
         grid-column: span 1;
+        text-align: center;
     }
+    #changes_form{
+        position: fixed;
+        visibility: hidden;
+        opacity: 0;
+        top: 40%; 
+        display: grid;
+        transform: translateX(-50%);
+        margin: 10px auto;
+        width: 90%;
+        left: 50%;
+        padding: 20px; 
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        transition: top 0.5s ease, visibility 0.5s ease, opacity 0.5s ease;
+    }
+    #changes_form.active {
+        top: 85%; 
+        left: 50%;
+        visibility: visible;
+        opacity: 1;
+    }
+    #changes_form{
+        button {
+            display: flex;
+            justify-content: center;
+            font-family: 'Montserrat', "Arial", sans-serif;
+            font-size: 12px;
+    
+            width: 90%;
+            padding: 10px 8px;
+            margin-bottom: 10px;
+            border: 0;
+            border-radius: 10px;
+    
+            background-color: black;
+            color: white;
+            
+            transition: border-radius 0.4s ease,
+                        width 0.4s ease;
+        }
+    
+        button:hover {
+            border-radius: 0px;
+            width: 100%;
+        }
+    }
+    #edit-button {
+        width: 300px;
+        margin: 10px auto;
+        width: 90%;
+    }
+    .private-data-item{
+        width: 90%;
+        margin: 10px auto;
+    }
+    /* .private-data-special{
+        width: 200px;
+
+    } */
+
+
 }
 
 @media (min-width: 1000px) {

@@ -70,7 +70,9 @@
                     <input id="password_confirm" type="password" name="password" placeholder="Повторите пароль" required>
                     <input id="show_password_confirm" onclick="check_password_confirm()" type="checkbox" class="password-checkbox"> Показать пароль
                 </div>
-        
+                <div class="icon-container" id="loading">
+                    <div class="loading-icon perpetuum-mobile"></div>
+                </div>
                 <p id="error-message"></p>
 
                 <div class="card-button">
@@ -79,54 +81,6 @@
             </form>
         </div>
     </main>
-
-    <script>
-        document.getElementById("registrationForm").addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-        const email = document.getElementById("email").value;
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const passwordConfirm = document.getElementById("password_confirm").value;
-
-        const errorMessage = document.getElementById("error-message");
-        errorMessage.style = "color: red; height: min-content;";
-        errorMessage.textContent = "";
-
-        try {
-            const response = await fetch("/auth/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    username,
-                    password,
-                    password_confirm: passwordConfirm,
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                if (errorData.detail) {
-                    const errorText = errorData.detail[0]?.message || "Ошибка регистрации";
-                    errorMessage.textContent = errorText;
-                } else {
-                    errorMessage.textContent = "Не удалось зарегистрироваться. Проверьте данные.";
-                }
-            } else {
-                const successData = await response.json();
-                errorMessage.textContent = successData.message || "Подтвердите регистрацию по ссылке, отправленной по электронной почте"
-                errorMessage.style = "height: min-content; color: green;";
-                document.getElementById("registrationForm").reset();
-            }
-        } catch (error) {
-            console.error("Ошибка:", error);
-            errorMessage.textContent = "Произошла ошибка. Попробуйте позже.";
-        }
-    });
-    </script>
 
 
     <footer>
@@ -171,7 +125,7 @@
         </div>
     </footer>
 
-    <script src="../static/js/register.js"></script>
+    <script src="../static/js/register.js" defer></script>
     <script src="../static/js/general_scripts.js" defer></script>
     <script src="../static/js/isauth.js"></script>
     <script src="../static/js/login_send_form_and_update_tokens.js"></script>

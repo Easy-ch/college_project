@@ -2,12 +2,19 @@ document.getElementById('loginForm').onsubmit = async (e) => {
     e.preventDefault();
 
     const error_tag = document.getElementById("error-message");
-    const formData = new FormData(e.target);
+    const login = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
     try {
         const response = await fetch('/auth/login', {
             method: 'POST',
-            body: formData
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                login,
+                password,
+            }),
         });
 
         if (response.ok) {
