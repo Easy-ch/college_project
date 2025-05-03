@@ -5,6 +5,13 @@ from fastapi_mail import FastMail, MessageSchema
 from fastapi import HTTPException
 from config import email_config
 import re
+from datetime import datetime, timezone
+from fastapi import  Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from db import get_db
+from sqlalchemy import delete
+import asyncio
+from models.models import BlockedRoute
 
 def load_services():
     with open("data/popular_services.json", "r", encoding="utf-8") as file:
@@ -151,3 +158,18 @@ def validation_translate(message: str, field: str):
         
         case _:
             return message
+        
+
+shutdown_event = asyncio.Event()
+
+async def delete_expired_routes(db: AsyncSession = Depends(get_db)):
+    await db.execute(
+        delete(BlockedRoute).where(BlockedRoute.expire_at < datetime.now(timezone.utc))
+    )
+    await db.commit()
+
+async def auto_delete_expired_routes():
+    while not shutdown_event.is_set():
+        async for db in get_db():
+            await delete_expired_routes(db)
+        await asyncio.sleep(300)

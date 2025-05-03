@@ -8,9 +8,10 @@ class RegisterUser(BaseModel):
     email: EmailStr
     
     username: str = Field(...,
-                          min_length=4,
-                          max_length=50,
-                          pattern=r'^[a-zA-Z0-9_.-а-яА-ЯёЁ]+$')
+                    min_length=4,
+                    max_length=50,
+                    pattern=r'^[a-zA-Z0-9_.\-а-яА-ЯёЁ]+$'                  
+    )
     
     password: str = Field(...,
                           min_length=8,
@@ -35,7 +36,7 @@ class RegisterUser(BaseModel):
             )
         return self
     
-    
+
 class LoginUser(BaseModel):
     login: str = Field(...,
                        min_length=4,
@@ -54,7 +55,7 @@ class ResetPasswordModel(BaseModel):
                               min_length=8,
                               max_length=30,
                               description="Пароль")
-    
+
 
 class ProfileModel(BaseModel):
     username_change: Optional[str] = Field(default=None,max_length=50)

@@ -19,6 +19,10 @@ from db import init_db
 from pathlib import Path
 from secrets import token_urlsafe
 from utils import validation_translate
+import asyncio
+from utils import auto_delete_expired_routes
+
+
 
 
 green = "\033[32m"
@@ -48,11 +52,14 @@ if START_WITH_TEST:
     else:
         logging.info(f"{green}Тесты пройдены успешно{reset}\n")
 
-
+class StaticFilesWithoutCaching(StaticFiles):
+    def is_not_modified(self, *args, **kwargs) -> bool:
+        return super().is_not_modified(*args, **kwargs) and False
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
         await init_db()
+        asyncio.create_task(auto_delete_expired_routes())
         yield
 
 
@@ -109,4 +116,4 @@ if not START_WITH_TEST:
             else:
                 SECRET_KEY = key_file.read_text()
 
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+        uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

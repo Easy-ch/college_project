@@ -255,3 +255,7 @@ async def reset_password(token: str, form_data: ResetPasswordModel, db: AsyncSes
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={ "message": "Ошибка при обновлении пароля" }
         )
+    
+
+
+
